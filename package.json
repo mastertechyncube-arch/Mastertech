@@ -1,8 +1,0 @@
-{
-  "name":"mastertech-v2",
-  "version":"2.0.0",
-  "private":true,
-  "description":"MasterTech full-stack starter with native Node backend and persistent JSON database",
-  "scripts":{"start":"node server.js"},
-  "engines":{"node":">=18"}
-}
