@@ -1,0 +1,1465 @@
+<!-- index.html — PART 1 of 2 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="#030914" name="theme-color"/>
+<meta content="MasterTech — Posters, Websites, Apps, Laptops and MasterTech Academy." name="description"/>
+<title>MasterTech — Posters • Sites • Apps • Laptops • Academy</title>
+<link rel="manifest" href="/manifest.webmanifest"/>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23030914'/%3E%3Ctext x='16' y='22' font-family='Inter,sans-serif' font-size='18' font-weight='900' fill='%2300d4ff' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root{
+ --bg:#030914;--bg2:#061225;--panel:#07152a;--panel2:#0a1b34;
+ --primary:#0A2647;--blue:#2563eb;--cyan:#00d4ff;--purple:#7357ff;
+ --text:#f4f7fb;--muted:#9aa9bd;--line:rgba(79,151,255,.28);
+ --green:#22c55e;--red:#ef4444;--yellow:#fbbf24;
+ --max:1180px;--radius:18px;--shadow:0 20px 70px rgba(0,0,0,.32);
+ --surface:#061225;--surface2:#07182e;--input:#030b17;--border:#1b3d62;
+}
+body.light{--bg:#f4f7fb;--bg2:#eaf0f7;--panel:#ffffff;--panel2:#f7faff;--text:#0c1930;--muted:#5f6f84;--line:rgba(15,65,120,.18);--surface:#ffffff;--surface2:#f4f8fd;--input:#f7faff;--border:#d5e0ed;--shadow:0 18px 55px rgba(18,52,86,.13)}
+body.light .topbar{background:#eef4fa;color:#38506b;border-color:#dbe5ef}
+body.light .nav{background:rgba(255,255,255,.9);border-color:#dbe5ef}
+body.light .navlinks a,body.light .drop>button{color:#20334d}
+body.light .circle{background:#fff;color:#0c1930;border-color:#d5e0ed}
+body.light .drop-menu{background:#fff;border-color:#d5e0ed}
+body.light .hero{background:radial-gradient(circle at 68% 34%,rgba(20,76,180,.12),transparent 28%),linear-gradient(180deg,#f9fbfe,#eef4fa)}
+body.light .grid-bg{opacity:.28}
+body.light .hero p{color:#42546b}
+body.light .btn-dark{background:#fff;color:#14243a;border-color:#d5e0ed}
+body.light .section.dark{background:#eef4fa}
+body.light .section.alt{background:#f7faff}
+body.light .service,body.light .project,body.light .product,body.light .poster,body.light .cart-item,body.light .summary,body.light .form-card,body.light .contact-card,body.light .timeline-item article,body.light .detail-card,body.light .admin-card,body.light .admin-form,body.light .admin-sidebar,body.light .admin-product{background:var(--surface);border-color:#d5e0ed}
+body.light .product-image{background:radial-gradient(circle at 50% 40%,#dbeaff,#f7faff 65%)}
+body.light .product-image:before{border-color:#8db4df}
+body.light .field,body.light .filters select,body.light .form-group input,body.light .form-group textarea,body.light .form-group select{background:var(--input);color:var(--text);border-color:#cbd8e7}
+body.light .page-hero{background:radial-gradient(circle at 75% 20%,#b8dcff55,transparent 25%),linear-gradient(180deg,#f7faff,#edf3f9);border-color:#dbe5ef}
+body.light footer{background:#eaf1f8;border-color:#d7e2ee}
+body.light .footer-grid p,body.light .footer-grid li,body.light .footer-grid a{color:#62758c}
+body.light .screen{background:radial-gradient(circle at 70% 20%,rgba(0,212,255,.18),transparent 20%),linear-gradient(145deg,#102e55,#071326)}
+body.light .admin-note{background:#fff8dc;color:#6d5515;border-color:#e6cf77}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden;transition:background-color .3s,color .3s}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;display:block}
+.container{width:min(var(--max),92%);margin:auto}
+.hidden{display:none!important}
+.muted{color:var(--muted)}
+.text-cyan{color:var(--cyan)}
+.topbar{height:31px;border-bottom:1px solid rgba(71,131,220,.16);background:#020710;color:#d8e2ee;font-size:11px}
+.topbar .container{height:100%;display:flex;justify-content:space-between;align-items:center}
+.nav{position:sticky;top:0;z-index:100;background:rgba(3,9,20,.9);backdrop-filter:blur(16px);border-bottom:1px solid rgba(71,131,220,.18)}
+.nav-inner{height:64px;display:flex;align-items:center;gap:28px}
+.logo{display:flex;align-items:center;gap:10px;font-size:24px;font-weight:900;letter-spacing:-1.2px;min-width:max-content}
+.logo-mark{width:36px;height:36px;border:2px solid var(--cyan);border-radius:10px;display:grid;place-items:center;color:var(--cyan);font-weight:900;box-shadow:0 0 25px rgba(0,212,255,.12)}
+.logo span{color:var(--cyan)}
+.navlinks{display:flex;align-items:center;gap:4px;margin-left:auto}
+.navlinks a,.drop>button{border:0;background:transparent;color:#e2e8f0;padding:9px 13px;border-radius:9px;font-size:12px;font-weight:600}
+.navlinks a:hover,.navlinks a.active,.drop>button:hover{color:var(--cyan);background:rgba(0,212,255,.05)}
+.drop{position:relative}
+.drop-menu{position:absolute;top:42px;left:0;min-width:190px;padding:7px;background:#061225;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);opacity:0;visibility:hidden;transform:translateY(6px);transition:.2s}
+.drop:hover .drop-menu{opacity:1;visibility:visible;transform:none}
+.drop-menu a{display:block}
+.nav-actions{display:flex;gap:8px;align-items:center}
+.circle{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:#071326;color:white;display:grid;place-items:center}
+.cta-btn{background:linear-gradient(135deg,#2457e8,#314eea);color:#fff;border:0;border-radius:8px;padding:10px 21px;font-size:12px;font-weight:800;box-shadow:0 8px 25px rgba(37,99,235,.25)}
+.cta-btn:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.mobile{display:none}.theme-label{font-size:10px}.owner-link{color:#7edcff!important}.owner-link:before{content:"▣ ";opacity:.7}
+
+.page{display:none}
+.page.active{display:block}
+.hero{position:relative;overflow:hidden;padding:60px 0 26px;background:
+ radial-gradient(circle at 68% 34%,rgba(20,76,180,.20),transparent 28%),
+ radial-gradient(circle at 93% 70%,rgba(0,212,255,.10),transparent 23%),
+ linear-gradient(180deg,#030914,#020915)}
+.grid-bg{position:absolute;inset:0;opacity:.16;background-image:linear-gradient(rgba(0,100,220,.18) 1px,transparent 1px),linear-gradient(90deg,rgba(0,100,220,.18) 1px,transparent 1px);background-size:46px 46px;mask-image:linear-gradient(to bottom,black,transparent 82%)}
+.hero-grid{position:relative;display:grid;grid-template-columns:1fr 1.12fr;gap:35px;align-items:center}
+.hero-copy{padding:30px 0 25px}
+.pill{display:inline-flex;border:1px solid #315b93;border-radius:30px;padding:6px 13px;color:#69a8ff;font-size:11px;font-weight:700;margin-bottom:18px;background:rgba(8,24,48,.5)}
+.hero h1{font-size:clamp(42px,5vw,70px);line-height:1.01;letter-spacing:-3.2px;font-weight:900;max-width:650px}
+.hero h1 .gradient{background:linear-gradient(90deg,#2f5dff,#00d4ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:#d0d9e5;font-size:15px;max-width:570px;margin:18px 0 23px}
+.buttons{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:8px;padding:11px 18px;border:1px solid var(--line);font-size:12px;font-weight:800;transition:.25s}
+.btn:hover{transform:translateY(-2px)}
+.btn-blue{background:#2256e9;border-color:#2256e9;color:white}
+.btn-dark{background:#06101f;color:white}
+.btn-cyan{background:var(--cyan);color:#03111e;border-color:var(--cyan)}
+.trust{display:flex;gap:24px;align-items:center;margin-top:24px}
+.avatars{display:flex}
+.avatar{width:30px;height:30px;border-radius:50%;margin-right:-7px;border:2px solid #071225;background:linear-gradient(135deg,#d6e1ed,#53677e);display:grid;place-items:center;font-size:10px;color:#071225;font-weight:900}
+.trust small{color:#b9c5d3;font-size:11px}
+.stars{color:#ffd34e;letter-spacing:2px;font-size:13px}
+.device-stage{min-height:430px;position:relative;display:flex;align-items:center;justify-content:center}
+.laptop-hero{width:570px;max-width:95%;height:320px;border-radius:16px 16px 10px 10px;border:2px solid #6f7e9b;background:linear-gradient(145deg,#172238,#030914);box-shadow:0 30px 80px rgba(0,0,0,.65),0 0 60px rgba(0,97,255,.14);transform:perspective(900px) rotateY(-10deg) rotateX(3deg);position:relative;z-index:2;padding:14px}
+.screen{height:100%;border-radius:8px;background:radial-gradient(circle at 70% 20%,rgba(0,212,255,.16),transparent 20%),linear-gradient(145deg,#071b38,#020713);border:1px solid #243c63;padding:22px;overflow:hidden}
+.screen-brand{font-size:9px;color:#9eb6d3}.screen h3{font-size:26px;line-height:1.08;margin-top:38px;max-width:280px}.screen h3 span{color:var(--cyan)}
+.screen-card{position:absolute;right:45px;bottom:45px;width:145px;height:95px;border:1px solid #34588d;border-radius:8px;background:linear-gradient(145deg,#10264b,#061225);box-shadow:0 15px 35px #0007}
+.screen-card:after{content:"";position:absolute;width:55px;height:55px;border:1px solid #3d8cff;border-radius:50%;right:18px;top:19px;box-shadow:0 0 20px #0077ff55}
+.laptop-base{position:absolute;width:630px;max-width:105%;height:18px;background:linear-gradient(#7888a2,#26354e);bottom:48px;border-radius:0 0 30px 30px;transform:perspective(900px) rotateY(-10deg) rotateX(3deg);box-shadow:0 20px 35px #0008}
+.phone{position:absolute;z-index:4;left:6%;bottom:42px;width:98px;height:190px;border:4px solid #24324a;border-radius:18px;background:#020813;box-shadow:0 25px 50px #0008;transform:rotate(-4deg)}
+.phone-screen{margin:7px;height:172px;border-radius:12px;background:linear-gradient(180deg,#071b37,#020811);padding:14px 8px;font-size:7px}.phone-screen b{font-size:11px;display:block;margin-top:25px}.phone-screen span{color:var(--cyan)}
+.tablet{position:absolute;right:0;bottom:35px;width:165px;height:220px;border:5px solid #25334b;border-radius:18px;background:#020811;box-shadow:0 25px 55px #0009;transform:rotate(7deg);z-index:3;padding:8px}.tablet-screen{height:100%;border-radius:11px;background:linear-gradient(145deg,#0a2447,#020811);padding:15px}.tablet-screen h4{font-size:12px;margin-top:30px}.mini-poster{height:55px;margin-top:18px;background:linear-gradient(135deg,#243dff,#00c6ff);border-radius:6px;display:grid;place-items:center;font-size:10px;font-weight:900;color:#fff}
+.glow{position:absolute;width:330px;height:330px;border-radius:50%;background:#0066ff22;filter:blur(50px);right:15%;top:15%}
+.stats{border:1px solid #2b4e7e;border-radius:16px;background:rgba(5,17,35,.6);display:grid;grid-template-columns:repeat(4,1fr);margin-top:10px;overflow:hidden}
+.stat{padding:20px 25px;display:flex;align-items:center;gap:15px;border-right:1px solid #263e60}.stat:last-child{border:0}.stat-icon{font-size:24px;color:var(--cyan)}.stat strong{font-size:22px;display:block}.stat small{font-size:11px;color:#c2ccda}
+.section{padding:75px 0;position:relative}.section.dark{background:#030914}.section.alt{background:#050e1c}
+.heading{text-align:center;margin-bottom:38px}.eyebrow{color:#1caaff;font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase}.heading h2{font-size:29px;line-height:1.1;letter-spacing:-1.2px;margin:6px 0 8px}.heading p{font-size:12px;color:var(--muted)}
+.services{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.service{padding:26px;border:1px solid #17416e;background:linear-gradient(145deg,#07172d,#040b17);border-radius:13px;position:relative;overflow:hidden;transition:.3s}.service:hover{border-color:#2581df;transform:translateY(-4px)}.service:before{content:"";position:absolute;width:80px;height:80px;right:-35px;top:-35px;border-radius:50%;background:#00d4ff12}.service-icon{width:54px;height:54px;border-radius:11px;display:grid;place-items:center;font-size:23px;background:linear-gradient(145deg,#123d82,#06204a);color:#4e9bff;margin-bottom:16px;border:1px solid #2463aa}.service:nth-child(2) .service-icon{background:linear-gradient(145deg,#07576c,#063044);color:#00e7ff}.service:nth-child(3) .service-icon{background:linear-gradient(145deg,#432a8e,#21124f);color:#a994ff}.service h3{font-size:16px;margin-bottom:7px}.service p{font-size:11px;color:#aebbd0;max-width:300px}.service a{display:inline-block;color:var(--cyan);font-size:11px;font-weight:800;margin-top:15px}
+.projects{display:grid;grid-template-columns:repeat(4,1fr);gap:17px}.project{border:1px solid #1a3b64;background:#061225;border-radius:12px;overflow:hidden;transition:.3s}.project:hover{transform:translateY(-4px);border-color:#2d73c2}.project-visual{height:150px;padding:10px;background:#dfe8f0;position:relative;overflow:hidden}.mock-site{height:100%;border-radius:5px;background:#fff;color:#13223a;padding:11px;font-size:7px}.mock-site .bar{height:6px;width:42px;background:#195de6;border-radius:2px;margin-bottom:17px}.mock-site h4{font-size:15px;line-height:1.05;max-width:150px}.mock-site .bluebox{width:75px;height:25px;background:#e8f2ff;border-radius:4px;margin-top:13px}.mock-app{height:100%;background:linear-gradient(145deg,#091e3b,#030b16);border-radius:5px;padding:12px;color:#fff}.mock-app .appbar{height:8px;width:30px;background:#00d4ff;border-radius:4px}.mock-app .circles{display:flex;gap:8px;margin-top:18px}.mock-app i{width:32px;height:32px;border-radius:50%;border:1px solid #1766b7;display:block}.mock-poster{height:100%;border-radius:5px;background:linear-gradient(135deg,#ffc857,#ef5da8);display:grid;place-items:center;color:#fff;font-size:20px;font-weight:900;text-align:center}.project-info{padding:13px}.project-info b{font-size:12px}.project-info small{display:block;color:#91a0b4;font-size:10px;margin-top:2px}
+.features{display:grid;grid-template-columns:repeat(4,1fr);gap:0}.feature{padding:15px 25px;border-right:1px solid #1b2d48}.feature:last-child{border:0}.feature-icon{font-size:26px;color:#238dff;margin-bottom:8px}.feature b{font-size:12px}.feature p{font-size:10px;color:#9daabd}
+.cta{padding:22px 0 60px}.cta-box{border:1px solid #24508a;border-radius:16px;min-height:165px;background:radial-gradient(circle at 80% 50%,#10428b55,transparent 32%),linear-gradient(110deg,#061a3c,#061125);padding:35px 45px;display:flex;align-items:center;justify-content:space-between;gap:30px;overflow:hidden}.cta-box h2{font-size:28px;line-height:1.15;max-width:600px}.bulb{font-size:78px;filter:drop-shadow(0 0 25px #248dff);opacity:.9}
+footer{padding:28px 0 16px;background:#020710;border-top:1px solid #13243b}.footer-grid{display:grid;grid-template-columns:1.35fr 1fr 1fr 1fr 1.35fr;gap:30px}.footer-grid h4{font-size:12px;margin-bottom:11px}.footer-grid p,.footer-grid li,.footer-grid a{font-size:10px;color:#8f9caf}.footer-grid ul{list-style:none}.footer-grid li{margin:6px 0}.footer-grid a:hover{color:var(--cyan)}.socials{display:flex;gap:7px;margin-top:14px}.socials a{width:27px;height:27px;border:1px solid #294260;border-radius:50%;display:grid;place-items:center}.newsletter{display:flex;margin-top:10px}.newsletter input{border-radius:7px 0 0 7px;background:#061124;border:1px solid #1c3658;color:white;padding:9px;font-size:10px}.newsletter button{width:42px;border:0;border-radius:0 7px 7px 0;background:#2758df;color:white}.copyright{border-top:1px solid #102038;margin-top:22px;padding-top:13px;font-size:9px;color:#65748a;display:flex;justify-content:space-between}
+
+.page-hero{padding:60px 0 48px;background:radial-gradient(circle at 75% 20%,#0b3f7740,transparent 25%),linear-gradient(180deg,#040d1c,#030914);border-bottom:1px solid #12263f}.page-hero h1{font-size:45px;letter-spacing:-2px;line-height:1.05}.page-hero p{color:#9faec1;max-width:650px;font-size:13px;margin-top:10px}
+.service-detail{display:grid;grid-template-columns:1fr 1fr;gap:45px;align-items:center}.detail-card{border:1px solid #1c4777;background:linear-gradient(145deg,#07172d,#040b16);border-radius:16px;padding:28px}.checks{list-style:none;margin-top:20px}.checks li{font-size:12px;color:#b7c3d2;margin:10px 0}.checks li:before{content:"✓";color:var(--cyan);font-weight:900;margin-right:10px}.stack{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px}.stack div{border:1px solid #1d3b61;border-radius:10px;padding:15px 8px;text-align:center;color:#b7c6d8;font-size:11px;background:#061225}.stack strong{display:block;color:white;margin-top:5px}
+.timeline{max-width:800px;margin:auto;position:relative}.timeline:before{content:"";position:absolute;left:25px;top:0;bottom:0;width:1px;background:#20466e}.timeline-item{display:flex;gap:22px;margin-bottom:26px;position:relative}.num{width:51px;height:51px;border-radius:50%;background:#071b37;border:1px solid #2a71b8;color:var(--cyan);display:grid;place-items:center;font-size:11px;font-weight:900;flex:0 0 51px;z-index:1}.timeline-item article{border:1px solid #193b62;background:#061225;border-radius:13px;padding:18px;flex:1}.timeline-item h3{font-size:14px}.timeline-item p{font-size:11px;color:#9eacbe;margin-top:4px}
+.filters{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:22px}.field,.filters select{background:#061225;border:1px solid #1d3b60;color:#dfe8f2;border-radius:8px;padding:10px 12px;font-size:11px;outline:none}.field{flex:1;min-width:210px}.filters select{min-width:130px}.product-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;align-items:stretch}.product-grid>.product{min-width:0}.product{border:1px solid #183a62;background:linear-gradient(145deg,#07162b,#040b16);border-radius:13px;overflow:hidden;transition:.3s}.product:hover{transform:translateY(-4px);border-color:#2777c9;box-shadow:0 15px 40px #0005}.product-image{height:190px;background:radial-gradient(circle at 50% 40%,#123e6e,#061225 65%);display:grid;place-items:center;position:relative;overflow:hidden}.product-image:before{content:"";position:absolute;width:180px;height:80px;border:1px solid #2a70b5;border-radius:12px;transform:perspective(400px) rotateX(-8deg);opacity:.5}.device-symbol{font-size:48px;z-index:1;filter:drop-shadow(0 10px 20px #000)}.tag{position:absolute;left:9px;top:9px;background:#0c315d;color:#6fc7ff;border:1px solid #1c5e97;border-radius:5px;padding:4px 7px;font-size:8px;font-weight:800;z-index:2}.product-body{padding:15px;display:flex;flex-direction:column;min-height:142px}.product-body .cat{font-size:8px;color:#4eb7ff;text-transform:uppercase;letter-spacing:1.2px;font-weight:900}.product-body h3{font-size:12px;margin:4px 0}.meta{font-size:9px;color:#8392a6;min-height:30px}.product-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto;padding-top:12px}.product-bottom>div{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.price{font-weight:900;font-size:13px}.mini{border:0;border-radius:7px;background:#1555d5;color:#fff;padding:8px 10px;font-size:10px;font-weight:800}.mini:hover{background:#1f6bf0}.academy-grid .product{border-color:#3a327e;background:linear-gradient(145deg,#0b1029,#040b16)}.academy-grid .product:hover{border-color:#795dff;box-shadow:0 15px 45px rgba(93,68,255,.2)}.academy-grid .product-image:before{border-color:#6952ff}.academy-grid .tag{background:#24164f;border-color:#5f49c8;color:#c7baff}.product-image img{transition:transform .35s,filter .35s}.product:hover .product-image img{transform:scale(1.04);filter:saturate(1.08)}
+.poster-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.poster{border:1px solid #193d67;border-radius:12px;overflow:hidden;background:#061225}.poster-art{height:230px;display:grid;place-items:center;text-align:center;padding:20px;font-size:30px;font-weight:900}.poster-art span{display:block;font-size:12px;margin-top:8px}.poster-info{padding:13px}.poster-info b{font-size:11px}.poster-info small{display:block;color:#8392a6;font-size:9px}
+.cart-layout{display:grid;grid-template-columns:1fr 340px;gap:22px}.cart-list{display:grid;gap:10px}.cart-item{border:1px solid #193a61;background:#061225;border-radius:12px;padding:13px;display:grid;grid-template-columns:68px 1fr auto;gap:13px;align-items:center}.thumb{width:68px;height:58px;border-radius:9px;background:radial-gradient(circle,#164a7b,#061225);display:grid;place-items:center;font-size:27px}.cart-item h4{font-size:12px}.cart-item small{color:#8392a6;font-size:9px}.qty{display:flex;gap:6px;align-items:center;margin-top:7px}.qty button{width:25px;height:25px;border-radius:6px;border:1px solid #28496d;background:#07162a;color:white}.remove{border:0;background:transparent;color:#ff8585;font-size:9px}.summary{border:1px solid #235185;border-radius:14px;background:linear-gradient(145deg,#071a35,#040b16);padding:21px;height:max-content;position:sticky;top:85px}.summary h3{font-size:15px;margin-bottom:10px}.row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #17304d;font-size:11px}.row.total{font-size:15px;font-weight:900;border:0}.empty{border:1px dashed #284b70;border-radius:14px;text-align:center;padding:65px 20px;color:#8292a7}.empty div{font-size:42px;margin-bottom:10px}
+.form-card{max-width:850px;margin:auto;border:1px solid #1b416b;background:#061225;border-radius:15px;padding:25px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.form-group label{display:block;font-size:10px;font-weight:800;color:#cbd7e5;margin-bottom:5px}.form-group.full{grid-column:1/-1}.form-group input,.form-group textarea,.form-group select{width:100%;background:#030b17;border:1px solid #1d3b5e;color:white;border-radius:8px;padding:11px;font-size:11px;outline:none}.form-group textarea{min-height:125px;resize:vertical}.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:#2d86dd;box-shadow:0 0 0 3px #1671cf18}
+.contact-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:35px}.contact-cards{display:grid;gap:10px;margin-top:20px}.contact-card{border:1px solid #1a3b60;background:#061225;border-radius:11px;padding:14px;display:flex;gap:12px}.contact-card strong{display:block;font-size:11px}.contact-card small{color:#7f90a5;font-size:9px}
+.confirm{max-width:720px;margin:70px auto;text-align:center}.check{width:70px;height:70px;border-radius:50%;display:grid;place-items:center;background:#073b2a;color:#40e38a;border:1px solid #1b9b67;font-size:32px;margin:auto}.order-box{margin-top:25px;text-align:left;border:1px solid #1d4774;background:#061225;border-radius:14px;padding:20px}
+.owner{border-top:1px solid #163553}.admin-wrap{display:grid;grid-template-columns:220px 1fr;gap:18px}.admin-sidebar{border:1px solid #1b3d62;background:#061225;border-radius:14px;padding:10px;height:max-content;position:sticky;top:85px}.admin-tab{width:100%;text-align:left;border:1px solid transparent;background:transparent;color:#aebbd0;border-radius:9px;padding:11px 12px;font-size:10px;font-weight:800;margin-bottom:5px}.admin-tab:hover,.admin-tab.active{background:#0b2341;color:#fff;border-color:#245b91}.admin-panel{display:none}.admin-panel.active{display:block}.admin-head{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:16px}.admin-head h2{font-size:22px}.admin-stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}.admin-stat{border:1px solid #1b3d62;background:linear-gradient(145deg,#07182e,#040b16);border-radius:12px;padding:15px}.admin-stat small{color:#8191a7;font-size:8px;text-transform:uppercase;letter-spacing:1px}.admin-stat strong{display:block;font-size:23px;margin-top:4px}.admin-card{border:1px solid #1b3d62;background:#061225;border-radius:13px;padding:17px;margin-bottom:14px}.admin-table{width:100%;border-collapse:collapse;font-size:9px}.admin-table th,.admin-table td{text-align:left;padding:10px 7px;border-bottom:1px solid #17304d;vertical-align:middle}.admin-table th{color:#7f94ad;font-size:8px;text-transform:uppercase}.admin-table td{color:#d8e2ee}.status{display:inline-block;padding:4px 7px;border-radius:20px;background:#0d3150;color:#67caff;font-size:8px;font-weight:800}.admin-product-list{display:grid;gap:8px}.admin-product{border:1px solid #1b3d62;background:#07152a;border-radius:10px;padding:10px;display:flex;gap:10px;align-items:center}.admin-product .oi{width:48px;height:42px;border-radius:7px;background:#0a1d35;display:grid;place-items:center;font-size:20px;overflow:hidden}.admin-product .oi img{width:100%;height:100%;object-fit:cover}.admin-product h4{font-size:10px}.admin-product small{font-size:8px;color:#8492a5}.admin-actions{margin-left:auto;display:flex;gap:5px;flex-wrap:wrap}.admin-actions button{border:1px solid #284a6d;background:#081a30;color:#fff;border-radius:6px;padding:6px 8px;font-size:8px}.admin-form{border:1px solid #1b3d62;background:#061225;border-radius:12px;padding:17px}.admin-form h3{font-size:13px;margin-bottom:12px}.admin-form .form-grid{gap:10px}.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.admin-note{border:1px solid #6b531e;background:#211b08;color:#f7d77c;padding:12px;border-radius:10px;font-size:9px;margin-bottom:14px}.admin-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}.admin-toolbar .field{min-width:180px;flex:1}.admin-product-list.pro{gap:7px}.admin-product.pro{display:grid;grid-template-columns:54px minmax(0,1fr) auto;align-items:center}.admin-product.pro .oi{width:54px;height:54px}.admin-product.pro h4{font-size:11px;margin-bottom:3px}.admin-product-meta{display:flex;gap:7px;flex-wrap:wrap;color:#8191a7;font-size:8px}.admin-chip{padding:3px 7px;border-radius:99px;background:#0b2844;border:1px solid #204c72;color:#8edaff}.admin-chip.off{color:#ffbd8a;background:#30200e;border-color:#6b4a1d}.admin-bulk{display:none;padding:9px 10px;background:#081a30;border:1px solid #21476c;border-radius:9px;margin-bottom:9px;align-items:center;gap:8px;font-size:9px}.admin-bulk.show{display:flex}.admin-form .upload-row{display:flex;gap:8px;align-items:end}.admin-form .upload-row .form-group{flex:1}.academy-tools{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:16px 0}.academy-tools .field{flex:1;min-width:220px}.academy-count{font-size:9px;color:#7f94ad}.academy-featured{border:1px solid #204c72;background:linear-gradient(135deg,#06182e,#071326);border-radius:14px;padding:15px;margin-bottom:16px}.academy-featured-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.academy-featured .product{min-width:0}.admin-quick{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.admin-quick button{min-height:70px;text-align:left}.security-card{border-color:#31557a!important;background:linear-gradient(145deg,#07182e,#050d18)!important}.password-strength{font-size:8px;color:#7f94ad;margin-top:5px}.product .volume{font-size:8px;color:#68cfff;margin-top:3px}.product .product-image{position:relative;overflow:hidden}.product .product-image img{transition:transform .3s}.product:hover .product-image img{transform:scale(1.03)}
+@media(max-width:900px){.academy-featured-grid{grid-template-columns:repeat(2,1fr)}.admin-quick{grid-template-columns:1fr 1fr}}
+@media(max-width:680px){.admin-wrap{grid-template-columns:1fr}.admin-sidebar{position:static;display:flex;overflow:auto;gap:5px}.admin-tab{white-space:nowrap;width:auto}.admin-product.pro{grid-template-columns:48px minmax(0,1fr)}.admin-product.pro .admin-actions{grid-column:1/-1;margin-left:0}.academy-featured-grid{grid-template-columns:1fr}.admin-quick{grid-template-columns:1fr}}
+.danger{color:#ff8d8d!important}.modal{position:fixed;inset:0;background:#000b;z-index:2000;display:none;align-items:center;justify-content:center;padding:18px}.modal.open{display:flex}.modal-box{width:min(680px,100%);max-height:90vh;overflow:auto;background:#061225;border:1px solid #245185;border-radius:15px;padding:24px;position:relative;box-shadow:var(--shadow)}.close{position:absolute;right:14px;top:14px;border:1px solid #274767;background:#07172b;color:white;width:31px;height:31px;border-radius:7px}.toastbox{position:fixed;right:17px;bottom:17px;z-index:3000;display:grid;gap:8px}.toast{background:#07182b;border:1px solid #2a6fae;border-left:3px solid var(--cyan);padding:11px 14px;border-radius:8px;box-shadow:var(--shadow);font-size:10px;animation:in .25s}.toast.error{border-left-color:var(--red)}@keyframes in{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}#top{position:fixed;right:18px;bottom:70px;width:37px;height:37px;border-radius:9px;border:1px solid #254c72;background:#07182b;color:white;z-index:100;opacity:0;pointer-events:none;transition:.2s}#top.show{opacity:1;pointer-events:auto}
+
+/* PREMIUM VISUAL LAYER */
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(circle at 15% 15%,rgba(0,212,255,.035),transparent 22%),radial-gradient(circle at 85% 30%,rgba(62,86,255,.045),transparent 25%)}
+.hero:after{content:"";position:absolute;inset:auto 0 0;height:180px;background:linear-gradient(transparent,var(--bg));pointer-events:none}
+.device-stage:before{content:"";position:absolute;width:650px;height:650px;border-radius:50%;background:radial-gradient(circle,rgba(0,128,255,.18),rgba(0,212,255,.05) 32%,transparent 68%);filter:blur(3px);animation:pulseGlow 5s ease-in-out infinite}
+.device-stage:after{content:"";position:absolute;width:580px;height:260px;border-radius:50%;border:1px solid rgba(0,174,255,.22);box-shadow:0 0 55px rgba(0,112,255,.12),inset 0 0 35px rgba(0,212,255,.05);transform:rotate(-10deg);animation:orbit 12s linear infinite}
+.laptop-hero{background:linear-gradient(145deg,#1d2739,#050914 58%,#111c30);box-shadow:0 38px 90px rgba(0,0,0,.78),0 0 85px rgba(0,103,255,.22),inset 0 1px rgba(255,255,255,.22)}
+.laptop-hero:before{content:"";position:absolute;left:13%;right:13%;top:8px;height:2px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);filter:blur(.5px)}
+.screen{background:radial-gradient(circle at 72% 25%,rgba(0,212,255,.25),transparent 18%),radial-gradient(circle at 38% 90%,rgba(47,93,255,.18),transparent 28%),linear-gradient(145deg,#081c3b,#020713 70%);box-shadow:inset 0 0 45px rgba(0,0,0,.65)}
+.screen:after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.10),transparent 17%,transparent 70%,rgba(255,255,255,.04));pointer-events:none}
+.phone,.tablet{filter:drop-shadow(0 25px 30px rgba(0,0,0,.7)) drop-shadow(0 0 22px rgba(0,117,255,.12));border-color:#71819a!important}
+.phone{transform:perspective(700px) rotateY(12deg) rotateZ(-2deg)!important}
+.tablet{transform:perspective(700px) rotateY(-14deg) rotateZ(3deg)!important}
+.floating-chip{position:absolute;z-index:6;padding:9px 12px;border:1px solid rgba(77,160,255,.45);background:rgba(4,14,30,.78);backdrop-filter:blur(12px);border-radius:10px;color:#dcecff;font-size:9px;box-shadow:0 12px 35px rgba(0,0,0,.45),0 0 20px rgba(0,150,255,.08);animation:floatChip 4s ease-in-out infinite}
+.chip-one{top:18%;right:5%}.chip-two{bottom:12%;left:2%;animation-delay:1.3s}.chip-one b,.chip-two b{color:var(--cyan);display:block;font-size:13px}
+@keyframes pulseGlow{0%,100%{transform:scale(.96);opacity:.75}50%{transform:scale(1.04);opacity:1}}
+@keyframes orbit{to{transform:rotate(-10deg) rotate(360deg)}}
+@keyframes floatChip{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.section{position:relative}.section:before{content:"";position:absolute;top:20px;left:2%;width:90px;height:90px;background-image:radial-gradient(rgba(0,212,255,.55) 1px,transparent 1px);background-size:9px 9px;opacity:.25;mask-image:linear-gradient(135deg,black,transparent)}
+.service,.project,.product,.poster,.form-card,.summary,.detail-card,.contact-card{backdrop-filter:blur(10px)}
+.product-image{background:radial-gradient(circle at 50% 38%,rgba(21,91,160,.75),rgba(4,13,27,.98) 64%);box-shadow:inset 0 0 55px rgba(0,116,255,.09)}
+.product-image:after{content:"";position:absolute;inset:0;background:linear-gradient(125deg,rgba(255,255,255,.08),transparent 25%,transparent 75%,rgba(0,212,255,.04));pointer-events:none}
+.theme-toggle{position:relative;overflow:hidden}
+.theme-toggle .theme-sun{display:none}.theme-toggle .theme-moon{display:inline}
+body.light{--bg:#f4f7fb;--bg2:#ffffff;--panel:#ffffff;--panel2:#eef4fb;--text:#102033;--muted:#607086;--line:rgba(26,83,145,.20);--shadow:0 20px 60px rgba(16,42,70,.12);background:#f5f8fc;color:var(--text)}
+body.light:before{background:radial-gradient(circle at 15% 15%,rgba(0,180,255,.08),transparent 22%),radial-gradient(circle at 85% 30%,rgba(62,86,255,.07),transparent 25%)}
+body.light .topbar{background:#071426;color:#dbe8f7} body.light .nav{background:rgba(255,255,255,.9);border-color:#dce6f1} body.light .navlinks a,body.light .drop>button{color:#23354d} body.light .circle{background:#fff;color:#16304e;border-color:#cad9e9}
+body.light .hero{background:radial-gradient(circle at 68% 34%,rgba(20,76,180,.10),transparent 28%),linear-gradient(180deg,#ffffff,#edf5fc)}
+body.light .grid-bg{opacity:.22;background-image:linear-gradient(rgba(0,80,170,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(0,80,170,.10) 1px,transparent 1px)}
+body.light .hero p{color:#4e6077}body.light .pill{background:#fff} body.light .btn-dark{background:#fff;color:#18304b;border-color:#c8d8e9}
+body.light .section.alt,body.light footer{background:#edf3f9} body.light .service,body.light .project,body.light .product,body.light .poster,body.light .form-card,body.light .detail-card,body.light .contact-card,body.light .cart-item,body.light .admin-sidebar,body.light .admin-form,body.light .admin-card,body.light .summary{background:rgba(255,255,255,.86);border-color:#d6e3ef;color:#172b43}
+body.light .service p,body.light .project-info small,body.light .meta,body.light .poster-info small,body.light .contact-card small,body.light .timeline-item p{color:#65758a} body.light .filters select,body.light .field,body.light .form-group input,body.light .form-group textarea,body.light .form-group select{background:#fff;color:#172b43;border-color:#cbdbea}
+body.light .drop-menu{background:#fff;border-color:#d5e2ef} body.light .screen-brand,body.light .screen h3{color:#fff} body.light .admin-tab{color:#52657c} body.light .admin-tab.active,body.light .admin-tab:hover{background:#edf5ff;color:#123a68;border-color:#bcd5ed}
+body.light .cta-box{background:radial-gradient(circle at 80% 50%,#3b82f655,transparent 32%),linear-gradient(110deg,#e7f1ff,#f8fbff)}
+body.light .cta-box h2{color:#102844} body.light .newsletter input{background:#fff;color:#172b43;border-color:#cbdbea} body.light .modal-box{background:#fff;color:#172b43}
+body.light .empty{border-color:#b9cce0;color:#64758a} body.light .row{border-color:#dce6f0}
+body.light .theme-toggle .theme-sun{display:inline}body.light .theme-toggle .theme-moon{display:none}
+body.light .navlinks{background:#fff;border-color:#d5e2ef}
+body.light .navlinks .drop-menu{background:#f7faff}
+body.light .qty button,body.light .remove{color:#163453;border-color:#cbdbea}
+
+/* High-contrast stats: keep this information crisp in both themes.
+   The hero fade sits above normal-flow content, so keep the stats above that fade. */
+.stats{position:relative;z-index:3;background:rgba(7,20,38,.94);border-color:rgba(78,153,235,.48);box-shadow:0 18px 45px rgba(0,0,0,.22)}
+.stat{min-height:94px;transition:background .2s,transform .2s}.stat:hover{background:rgba(18,47,82,.78)}
+.stat strong{color:#fff;font-weight:900}.stat small{color:#cbd8e7;font-weight:600;line-height:1.35}.stat-icon{color:#00d4ff;text-shadow:0 0 14px rgba(0,212,255,.28)}
+body.light .stats{background:#fff;border-color:#a9c1d8;box-shadow:0 16px 42px rgba(25,58,92,.12)}
+body.light .stat{border-color:#c4d5e4;background:#fff}body.light .stat:hover{background:#f4f9ff}
+body.light .stat strong{color:#0b223a;font-weight:900}body.light .stat small{color:#405873;font-weight:700}body.light .stat-icon{color:#007fae;text-shadow:none}
+.btn:disabled,.mini:disabled{opacity:.5;cursor:not-allowed;transform:none}
+@media(max-width:780px){.floating-chip{display:none}.device-stage:after{width:90%;height:180px}.device-stage:before{width:420px;height:420px}}
+
+@media(max-width:1100px){
+ .hero-grid,.service-detail,.contact-grid{grid-template-columns:1fr}.device-stage{min-height:370px}
+ .projects,.poster-grid{grid-template-columns:repeat(2,1fr)}
+ .product-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .footer-grid{grid-template-columns:repeat(2,1fr)}
+ .features{grid-template-columns:repeat(2,1fr)}.feature{border-bottom:1px solid #1b2d48}
+ .admin-wrap{grid-template-columns:1fr}.admin-sidebar{position:static}.admin-stat-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:780px){
+ .navlinks{position:absolute;left:0;right:0;top:64px;background:#030b17;border-bottom:1px solid #173451;display:none;flex-direction:column;align-items:stretch;padding:10px}.navlinks.open{display:flex}.drop-menu{position:static;display:none;opacity:1;visibility:visible;transform:none;box-shadow:none;border:0;background:#061225}.drop:hover .drop-menu{display:block}.drop.mobile-open .drop-menu{display:block}.mobile{display:grid}.desktop{display:none}
+ .stats{grid-template-columns:1fr 1fr}.stat:nth-child(2){border-right:0}.stat{border-bottom:1px solid #263e60}.stats .stat:nth-last-child(-n+2){border-bottom:0}
+ .cta-box{padding:28px;flex-direction:column;align-items:flex-start}.bulb{display:none}.cart-layout{grid-template-columns:1fr}
+ .summary{position:static}.form-grid{grid-template-columns:1fr}.form-group.full{grid-column:auto}
+}
+@media(max-width:540px){
+ .topbar{display:none}.nav-inner{height:58px}.navlinks{top:58px}.hero{padding-top:35px}.hero h1{font-size:42px}.device-stage{min-height:290px}.laptop-hero{height:210px}.phone{width:70px;height:145px;bottom:25px}.phone-screen{height:132px}.tablet{width:115px;height:160px;bottom:20px}.tablet-screen{padding:9px}.laptop-base{bottom:22px;height:12px}
+ .stats{grid-template-columns:1fr}.stat{border-right:0!important}.stat:nth-last-child(-n+2){border-bottom:1px solid #263e60}.stat:last-child{border-bottom:0}
+ .services,.projects,.poster-grid,.features,.footer-grid{grid-template-columns:1fr}.product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.feature{border-right:0}.project-visual{height:180px}.page-hero h1{font-size:38px}.cart-item{grid-template-columns:55px 1fr}.cart-item>div:last-child{grid-column:2}.thumb{width:55px}.admin-grid{grid-template-columns:1fr}.admin-stat-grid{grid-template-columns:1fr 1fr}
+}
+
+/* Poster-inspired MasterTech visual system */
+.poster-hero{position:relative;overflow:hidden;padding:54px 0 42px;background:radial-gradient(circle at 64% 35%,rgba(30,86,255,.34),transparent 30%),radial-gradient(circle at 82% 80%,rgba(0,212,255,.16),transparent 25%),linear-gradient(120deg,#02050d,#06152c 52%,#020711)}
+.poster-grid-bg{position:absolute;inset:0;opacity:.16;background-image:linear-gradient(rgba(0,120,255,.24) 1px,transparent 1px),linear-gradient(90deg,rgba(0,120,255,.24) 1px,transparent 1px);background-size:54px 54px;mask-image:linear-gradient(to bottom,black,transparent 92%)}
+.poster-hero-grid{position:relative;display:grid;grid-template-columns:.92fr 1.08fr;gap:22px;align-items:center;min-height:430px}
+.poster-copy{padding:20px 0;z-index:2}.poster-kicker{font-size:11px;letter-spacing:5px;color:#00d4ff;font-weight:800;margin-bottom:15px}.poster-copy h1{font-size:clamp(58px,7vw,94px);line-height:.9;letter-spacing:-5px;font-weight:900}.poster-copy h1 span{color:#168cff}.poster-copy h2{font-size:clamp(23px,2.8vw,36px);line-height:1.08;margin-top:18px;letter-spacing:-1.6px}.poster-copy p{font-size:14px;color:#c6d4e4;max-width:530px;margin:17px 0 24px}.poster-outline{background:rgba(3,12,27,.72);color:#f5faff;border-color:#1e75d5;box-shadow:inset 0 0 22px rgba(0,130,255,.08)}.glow-btn{box-shadow:0 10px 35px rgba(0,108,255,.34)}
+.poster-device-stage{height:430px;position:relative;display:flex;align-items:center;justify-content:center}.poster-device-stage:before{content:"";position:absolute;width:520px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(0,130,255,.24),transparent 68%);filter:blur(18px)}
+.code-laptop{position:relative;width:min(680px,100%);height:350px;padding:12px;border-radius:17px 17px 10px 10px;border:2px solid #6d7e9d;background:linear-gradient(145deg,#1b2b45,#030811);box-shadow:0 30px 70px #000b,0 0 45px rgba(0,112,255,.25);transform:perspective(1100px) rotateY(-8deg) rotateX(2deg);z-index:3}.code-screen{height:100%;overflow:hidden;border-radius:9px;background:#07111f;border:1px solid #284568;box-shadow:inset 0 0 40px rgba(0,140,255,.07)}.vscode-top{height:32px;display:flex;align-items:center;gap:7px;padding:0 12px;background:#0d1727;border-bottom:1px solid #203852;font-size:8px;color:#b9cae0}.vscode-top span:nth-child(1){color:#ff5f57}.vscode-top span:nth-child(2){color:#febc2e}.vscode-top span:nth-child(3){color:#28c840}.vscode-top b{margin-left:8px;color:#cfe0f5;font-size:9px}.vscode-body{display:grid;grid-template-columns:170px 1fr;height:calc(100% - 32px)}.vscode-body aside{padding:13px 11px;background:#091322;border-right:1px solid #1b3049;color:#7890ad;font-size:7px;line-height:2}.vscode-body aside div{color:#cfe3fb;letter-spacing:1px;font-weight:800;margin-bottom:3px}.vscode-body aside p{white-space:nowrap}.vscode-body main{overflow:hidden}.code-tab{height:28px;padding:7px 13px;background:#0d1c2e;color:#dcecff;font-size:8px;border-bottom:1px solid #203952}.vscode-body pre{padding:18px;font-family:Consolas,Monaco,monospace;font-size:10px;line-height:1.8;color:#b9c8d9}.code-key{color:#d782ff}.code-name{color:#57d7ff}.code-tag{color:#52e7a1}.laptop-foot{position:absolute;bottom:28px;width:min(730px,105%);height:17px;background:linear-gradient(#8191a9,#26354d);border-radius:0 0 35px 35px;box-shadow:0 20px 30px #0009;transform:perspective(1000px) rotateY(-8deg) rotateX(2deg);z-index:2}.floating-poster-note{position:absolute;right:0;top:15px;font-weight:900;font-size:20px;line-height:1.05;color:#eaf4ff;text-align:center;transform:rotate(7deg);text-shadow:0 0 16px #087cff}.floating-poster-note span{color:#00d4ff}.floating-book-stack{position:absolute;right:0;bottom:36px;display:grid;gap:2px;z-index:4;transform:rotate(5deg)}.floating-book-stack b{display:block;width:145px;padding:9px 13px;background:linear-gradient(90deg,#0b162a,#172a46);border:1px solid #294d77;color:#dbeaff;font-size:11px;letter-spacing:2px;box-shadow:0 8px 15px #0008}.poster-feature-strip{background:#030b17;border-top:1px solid #14375d;border-bottom:1px solid #14375d}.poster-feature-strip .container{display:grid;grid-template-columns:repeat(5,1fr)}.poster-feature-strip .container>div{display:flex;gap:13px;align-items:center;padding:18px 16px;border-right:1px solid #18304a}.poster-feature-strip .container>div:last-child{border-right:0}.poster-feature-strip b{font-size:26px;color:#00d4ff;text-shadow:0 0 18px rgba(0,212,255,.28)}.poster-feature-strip strong{display:block;font-size:11px}.poster-feature-strip small{display:block;color:#758aa4;font-size:8px}.poster-categories{padding-top:30px}.poster-category-grid{display:grid;grid-template-columns:1.1fr 1.25fr .8fr .8fr .8fr;gap:14px}.poster-category{position:relative;min-height:210px;padding:19px;border:1px solid #15539a;border-radius:14px;overflow:hidden;background:linear-gradient(145deg,#07182e,#030914);box-shadow:0 15px 45px rgba(0,0,0,.26)}.poster-category:after{content:"";position:absolute;inset:auto -20% -55% 25%;height:150px;background:radial-gradient(circle,rgba(0,126,255,.3),transparent 65%);pointer-events:none}.poster-category .cat-icon{font-size:27px;color:#fff;margin-bottom:12px}.poster-category h3{font-size:23px;line-height:1.02;letter-spacing:-1px;margin:4px 0 8px}.poster-category h3 span{color:#8d74ff}.poster-category p{font-size:10px;color:#aabbd0;max-width:190px;margin-bottom:17px}.poster-category .btn{padding:9px 13px;font-size:9px}.product-cat{border-color:#1179ef;background:linear-gradient(145deg,#071c36,#061020)}.academy-cat{border-color:#6748ff;background:linear-gradient(145deg,#150b3a,#07122b)}.poster-cat{border-color:#167de6}.web-cat{border-color:#1b9dff}.app-cat{border-color:#1789ff}.cat-device{position:absolute;right:15px;bottom:10px;font-size:100px;color:#168cff;opacity:.28;transform:rotate(-8deg)}.academy-books{position:absolute;right:8px;bottom:19px;display:grid;gap:3px;transform:rotate(-7deg);z-index:1}.academy-books i{font-style:normal;font-size:7px;width:125px;padding:8px 10px;background:#101d4c;border:1px solid #6952ff;color:#cfd8ff;border-radius:3px;box-shadow:0 7px 13px #0008}.academy-btn{background:#734cff;border-color:#734cff}.academy-banner{margin-top:12px;padding:28px 0;background:linear-gradient(100deg,#050d1c,#071c3d 52%,#04101f);border-top:1px solid #1a5e9d;border-bottom:1px solid #173c64}.academy-banner-inner{display:grid;grid-template-columns:1.1fr 1.7fr auto;gap:18px;align-items:center}.academy-banner h2{font-size:24px;line-height:1.05}.academy-banner p{font-size:10px;color:#8298b1;margin-top:7px}.volume-placeholders{display:flex;gap:7px}.volume-placeholders span{min-width:90px;padding:14px 8px;text-align:center;border:1px solid #234a74;border-radius:7px;background:#071326;color:#d9e8fa;font-size:9px}.volume-placeholders small{color:#5d86ae;font-size:7px}.poster-bottom-cta{padding:24px 0 30px;background:#020811}.poster-bottom-cta .container{display:flex;justify-content:center;align-items:center;gap:17px;flex-wrap:wrap;font-size:21px;letter-spacing:4px;font-weight:900}.poster-bottom-cta b{color:#168cff}.poster-bottom-cta span:nth-of-type(2){color:#00bfff}.poster-bottom-cta small{width:100%;text-align:center;font-size:8px;letter-spacing:5px;color:#6c849f;font-weight:600}.academy-page-hero{padding:70px 0 55px;background:radial-gradient(circle at 70% 20%,rgba(100,55,255,.25),transparent 30%),linear-gradient(140deg,#030914,#11133b);border-bottom:1px solid #28428a}.academy-page-hero h1{font-size:clamp(45px,6vw,72px);letter-spacing:-3px}.academy-page-hero h1 span{color:#8d74ff}.academy-page-hero p{max-width:650px;color:#b9c8da;font-size:13px;margin-top:13px}.academy-intro{display:flex;justify-content:space-between;gap:30px;align-items:center;margin-bottom:25px;padding:22px;border:1px solid #3a327e;border-radius:15px;background:linear-gradient(120deg,#0a1028,#0b1830)}.academy-intro h2{font-size:25px;margin:5px 0}.academy-lockup{display:flex;gap:12px;align-items:center;font-size:34px;color:#9a7bff;text-align:center}.academy-lockup strong{font-size:12px;letter-spacing:2px;line-height:1.1}.academy-empty{min-height:260px;border:1px dashed #3b5d91;border-radius:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:radial-gradient(circle at 50% 40%,rgba(100,75,255,.12),transparent 55%);padding:30px}.academy-empty-icon{font-size:42px;margin-bottom:10px}.academy-empty h3{font-size:19px}.academy-empty p{font-size:10px;color:#8095ad;margin:5px 0 15px}.academy-grid .product-image{background:radial-gradient(circle at 50% 35%,#3b277e,#061225 66%)}
+@media(max-width:1000px){.poster-hero-grid{grid-template-columns:1fr}.poster-device-stage{height:390px}.poster-category-grid{grid-template-columns:repeat(2,1fr)}.poster-feature-strip .container{grid-template-columns:repeat(3,1fr)}.poster-feature-strip .container>div:nth-child(3){border-right:0}.academy-banner-inner{grid-template-columns:1fr}.volume-placeholders{flex-wrap:wrap}.academy-banner-inner>.btn{justify-self:start}}
+@media(max-width:780px){.poster-copy h1{font-size:58px}.poster-copy h2{font-size:25px}.code-laptop{height:270px}.vscode-body{grid-template-columns:110px 1fr}.vscode-body pre{font-size:7px}.poster-feature-strip .container{grid-template-columns:1fr 1fr}.poster-feature-strip .container>div:nth-child(3){border-right:1px solid #18304a}.poster-feature-strip .container>div:nth-child(even){border-right:0}.poster-category-grid{grid-template-columns:1fr}.poster-category{min-height:190px}.academy-intro{align-items:flex-start;flex-direction:column}.floating-poster-note,.floating-book-stack{display:none}}
+@media(max-width:540px){.poster-hero{padding-top:34px}.poster-device-stage{height:285px}.code-laptop{height:205px;padding:7px}.vscode-top{height:22px;font-size:6px}.vscode-body{height:calc(100% - 22px);grid-template-columns:72px 1fr}.vscode-body aside{font-size:5px;padding:7px 6px}.vscode-body pre{font-size:5px;line-height:1.5;padding:9px}.code-tab{height:21px;padding:5px 8px;font-size:6px}.laptop-foot{bottom:28px}.poster-bottom-cta .container{font-size:14px;letter-spacing:2px}.volume-placeholders span{min-width:80px}.academy-lockup{font-size:28px}}
+</style>
+
+<!-- index.html — PART 2 of 2 -->
+<body>
+<div class="topbar"><div class="container"><span>☎ +27 777 234 5788   ✉ hello@mastertech.com</span><span class="desktop">My Account     Wish List     Checkout</span></div></div>
+<nav class="nav">
+<div class="container nav-inner">
+<a class="logo" data-route="home" href="#home"><span class="logo-mark" id="adminLogoTrigger" role="button" tabindex="0" title="Owner access">M</span>Master<span>Tech</span></a>
+<div class="navlinks" id="navlinks">
+<a data-route="home" href="#home">⌂&nbsp; Home</a>
+<div class="drop"><button type="button">🛍&nbsp; Products⌄</button><div class="drop-menu"><a data-route="laptops" href="#laptops">💻&nbsp; Laptops</a><a data-route="cart" href="#cart">🛒&nbsp; Shopping Cart</a></div></div>
+<a data-route="academy" href="#academy">🎓&nbsp; MasterTech Academy</a>
+<a data-route="contact" href="#contact">💬&nbsp; Messages</a>
+<a data-route="contact" href="#contact">👤&nbsp; Account</a>
+</div>
+<div class="nav-actions"><button class="circle mobile" id="mobileMenu" type="button">☰</button><button class="circle desktop theme-toggle" id="themeToggle" title="Toggle day / night mode" type="button"><span class="theme-moon">☾</span><span class="theme-sun">☀</span></button><a class="cta-btn desktop" data-route="contact" href="#contact">Start a Project</a><button class="circle" data-route="cart" type="button" aria-label="Cart">🛒<span id="cartCount" style="font-size:8px;position:absolute;margin:-25px 0 0 22px;color:var(--cyan)">0</span></button></div>
+</div>
+</nav>
+<main>
+
+<section class="page active" id="page-home">
+<section class="poster-hero">
+<div class="poster-grid-bg"></div>
+<div class="container poster-hero-grid">
+<div class="poster-copy">
+<div class="poster-kicker">CODE • CREATE • INNOVATE</div>
+<h1>Master<span>Tech</span></h1>
+<h2>Your Complete Digital Solution Hub</h2>
+<p>We design stunning posters, build modern websites, create powerful apps and provide quality tech products — all in one place.</p>
+<div class="buttons"><a class="btn btn-blue glow-btn" data-route="laptops" href="#laptops">🛒&nbsp; Shop Now →</a><a class="btn poster-outline" data-route="posters" href="#posters">▷&nbsp; Watch Our Work</a></div>
+</div>
+<div class="poster-device-stage">
+<div class="code-laptop"><div class="code-screen">
+<div class="vscode-top"><span>●</span><span>●</span><span>●</span><b>MasterTech — Visual Studio Code</b></div>
+<div class="vscode-body"><aside><div>EXPLORER</div><p>▾ mastertech</p><p>　▾ src</p><p>　　▸ components</p><p>　　▸ pages</p><p>　　▸ styles</p><p>　　▣ index.js</p><p>　　▣ App.js</p><p>　　▣ README.md</p></aside><main><div class="code-tab">index.js</div><pre><span class="code-key">const</span> <span class="code-name">app</span> = () =&gt; {
+  <span class="code-key">return</span> (
+    &lt;<span class="code-tag">MasterTech</span>&gt;
+      &lt;<span class="code-tag">h1</span>&gt;Build. Design. Innovate.&lt;/<span class="code-tag">h1</span>&gt;
+      &lt;<span class="code-tag">p</span>&gt;Posters • Sites • Apps&lt;/<span class="code-tag">p</span>&gt;
+    &lt;/<span class="code-tag">MasterTech</span>&gt;
+  );
+};
+
+<span class="code-key">export default</span> app;</pre></main></div>
+</div></div>
+<div class="laptop-foot"></div>
+<div class="floating-poster-note">IDEAS<br/><span>CODE<br/>REALITY</span></div>
+<div class="floating-book-stack"><b>CODE</b><b>DESIGN</b><b>BUILD</b><b>GROW</b></div>
+</div>
+</div>
+</section>
+<section class="poster-feature-strip"><div class="container"><div><b>〈/〉</b><span><strong>Web Development</strong><small>Modern • Fast • Responsive</small></span></div><div><b>▯</b><span><strong>Mobile Apps</strong><small>iOS • Android • Cross-Platform</small></span></div><div><b>▧</b><span><strong>Posters &amp; Graphics</strong><small>Creative • Bold • Professional</small></span></div><div><b>◎</b><span><strong>Websites</strong><small>Business • Personal • E-commerce</small></span></div><div><b>⚙</b><span><strong>Tech Products</strong><small>Laptops • Accessories • More</small></span></div></div></section>
+<section class="poster-categories section">
+<div class="container">
+<div class="poster-category-grid">
+<article class="poster-category product-cat"><div class="cat-icon">💻</div><div><div class="eyebrow">FEATURED</div><h3>Products</h3><p>Laptops, accessories and more.</p><a class="btn btn-blue" data-route="laptops" href="#laptops">Shop Now →</a></div><div class="cat-device">▱</div></article>
+<article class="poster-category academy-cat"><div class="cat-icon">🎓</div><div><div class="eyebrow">LEARN • GROW • BUILD</div><h3>MasterTech <span>Academy</span></h3><p>Volume books to build your future.</p><a class="btn btn-blue academy-btn" data-route="academy" href="#academy">Explore Academy →</a></div><div class="academy-books"><i>MasterTech Academy</i><i>MasterTech Academy</i><i>MasterTech Academy</i><i>MasterTech Academy</i></div></article>
+<article class="poster-category poster-cat"><div class="cat-icon">▧</div><div><div class="eyebrow">CREATIVE STUDIO</div><h3>Posters</h3><p>Custom posters for brands, events and more.</p><a class="btn btn-blue" data-route="posters" href="#posters">Order Now →</a></div></article>
+<article class="poster-category web-cat"><div class="cat-icon">◎</div><div><div class="eyebrow">DIGITAL PRESENCE</div><h3>Websites</h3><p>Modern websites for businesses and individuals.</p><a class="btn btn-blue" data-route="web-development" href="#web-development">Get Started →</a></div></article>
+<article class="poster-category app-cat"><div class="cat-icon">▯</div><div><div class="eyebrow">BUILD SOMETHING</div><h3>Mobile Apps</h3><p>Powerful apps for iOS and Android concepts.</p><a class="btn btn-blue" data-route="app-development" href="#app-development">Start Project →</a></div></article>
+</div>
+</div>
+</section>
+<section class="academy-banner"><div class="container academy-banner-inner"><div><div class="eyebrow">MASTERTECH ACADEMY</div><h2>Learn • Grow • Build Your Future</h2><p>Volume books will appear here as you upload them from Admin.</p></div><div class="volume-placeholders"><span>Volume 1<br/><small>Coming Soon</small></span><span>Volume 2<br/><small>Coming Soon</small></span><span>Volume 3<br/><small>Coming Soon</small></span><span>Volume 4<br/><small>Coming Soon</small></span><span>Volume 5<br/><small>Coming Soon</small></span></div><a class="btn poster-outline" data-route="academy" href="#academy">View All Volumes →</a></div></section>
+<section class="poster-bottom-cta"><div class="container"><span>POSTERS</span><b>/</b><span>SITES</span><b>/</b><span>APPS</span><b>/</b><span>AND MORE</span><small>TURNING YOUR IDEAS INTO DIGITAL SOLUTIONS</small></div></section>
+</section>
+
+<section class="page" id="page-web-development">
+<section class="page-hero"><div class="container"><div class="eyebrow">Our Services</div><h1>Web Development</h1><p>High-performance, responsive websites built around your brand, customers and business goals.</p></div></section>
+<section class="section"><div class="container service-detail"><div><div class="eyebrow">Digital Presence</div><h2 style="font-size:30px;line-height:1.1;margin-top:7px">Your website should work as hard as your business.</h2><p class="muted" style="font-size:12px;margin-top:12px">From focused landing pages to complete e-commerce experiences, MasterTech builds digital products that are clear, fast and designed to convert.</p><ul class="checks"><li>Business and corporate websites</li><li>E-commerce stores</li><li>Landing pages and campaigns</li><li>Portfolios and personal brands</li><li>Custom web applications</li><li>Redesigns and performance improvements</li></ul></div><div class="detail-card"><h3>Technology Stack</h3><div class="stack"><div>HTML<strong>HTML5</strong></div><div>CSS<strong>CSS3</strong></div><div>JS<strong>JavaScript</strong></div><div>⚛<strong>React</strong></div><div>●<strong>Node.js</strong></div><div>PHP<strong>PHP</strong></div></div></div></div></section>
+<section class="section alt"><div class="container"><div class="heading"><div class="eyebrow">Start a Project</div><h2>Tell us what you want to build.</h2></div><div class="form-card"><form id="webForm"><input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0"><div class="form-grid"><div class="form-group"><label>Name *</label><input name="name" required=""/></div><div class="form-group"><label>Email *</label><input name="email" required="" type="email"/></div><div class="form-group"><label>Phone</label><input name="phone"/></div><div class="form-group"><label>Project Type</label><select name="project"><option>Business Website</option><option>E-commerce</option><option>Landing Page</option><option>Web Application</option><option>Redesign</option><option>Other / Custom Project</option></select></div><div class="form-group full"><label>Project Details / Describe Your Custom Project *</label><textarea name="details" placeholder="Tell us exactly what you want us to design or build..." required=""></textarea></div></div><button class="btn btn-blue" type="submit">Send Project Request →</button></form></div></div></section>
+</section>
+
+<section class="page" id="page-app-development">
+<section class="page-hero"><div class="container"><div class="eyebrow">Build Better</div><h1>App Development</h1><p>Useful, intuitive application experiences designed to solve real business problems.</p></div></section>
+<section class="section"><div class="container"><div class="heading"><div class="eyebrow">Our Process</div><h2>From idea to application.</h2></div><div class="timeline">
+<div class="timeline-item"><div class="num">01</div><article><h3>Discovery</h3><p>Understand the problem, audience, objectives and success criteria.</p></article></div>
+<div class="timeline-item"><div class="num">02</div><article><h3>Planning</h3><p>Map features, user journeys and the technical approach before development.</p></article></div>
+<div class="timeline-item"><div class="num">03</div><article><h3>Design</h3><p>Create a clean interface focused on usability and consistency.</p></article></div>
+<div class="timeline-item"><div class="num">04</div><article><h3>Development</h3><p>Build, test and refine the application against the agreed requirements.</p></article></div>
+<div class="timeline-item"><div class="num">05</div><article><h3>Launch</h3><p>Prepare deployment, handover and the roadmap for future improvements.</p></article></div>
+</div></div></section>
+<section class="section alt"><div class="container"><div class="heading"><div class="eyebrow">Applications</div><h2>What can we build?</h2></div><div class="services"><article class="service"><div class="service-icon">▣</div><h3>Business Apps</h3><p>Internal tools, customer portals and workflow applications.</p></article><article class="service"><div class="service-icon">🛒</div><h3>E-commerce Apps</h3><p>Shopping, catalog, order-request and customer account experiences.</p></article><article class="service"><div class="service-icon">▦</div><h3>Dashboards</h3><p>Data-driven admin, reporting and management interfaces.</p></article><article class="service"><div class="service-icon">◉</div><h3>Education &amp; Booking</h3><p>Learning platforms, appointment systems and custom service apps.</p></article><article class="service"><div class="service-icon">⚙</div><h3>Custom Mobile Apps</h3><p>Android-focused and responsive app concepts designed around your idea.</p></article><article class="service"><div class="service-icon">✦</div><h3>Other / Your Idea</h3><p>Describe your preferred app and we will help shape the requirements.</p></article></div></div></section>
+</section>
+
+<section class="page" id="page-posters">
+<section class="page-hero"><div class="container"><div class="eyebrow">Creative Studio</div><h1>Posters &amp; Design</h1><p>Professional visual content for events, businesses, promotions and social media.</p></div></section>
+<section class="section"><div class="container"><div class="filters"><button class="btn btn-blue pf" type="button" data-filter="all">All</button><button class="btn pf" type="button" data-filter="business">Business</button><button class="btn pf" type="button" data-filter="events">Events</button><button class="btn pf" type="button" data-filter="social">Social</button></div><div class="poster-grid" id="posterGrid"></div></div></section>
+<section class="section alt"><div class="container"><div class="heading"><div class="eyebrow">Custom Design Request</div><h2>Describe the poster you need.</h2><p>Tell us the event, message, colours, size and any other requirements.</p></div><div class="form-card"><form id="posterForm"><input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0"><div class="form-grid"><div class="form-group"><label>Name *</label><input name="name" required=""/></div><div class="form-group"><label>Email *</label><input name="email" required="" type="email"/></div><div class="form-group"><label>Phone</label><input name="phone"/></div><div class="form-group"><label>Poster Type</label><select name="poster_type"><option>Business Promotion</option><option>Event</option><option>Church / Service</option><option>Social Media</option><option>Product Promotion</option><option>Other</option></select></div><div class="form-group full"><label>Describe Your Poster *</label><textarea name="details" placeholder="Describe wording, colours, dimensions, deadline and preferred style..." required=""></textarea></div></div><button class="btn btn-blue" type="submit">Send Poster Request →</button></form></div></div></section></section>
+
+<section class="page" id="page-academy">
+<section class="academy-page-hero"><div class="container"><div class="eyebrow">LEARN • GROW • BUILD</div><h1>MasterTech <span>Academy</span></h1><p>Practical MasterTech Academy volume books for learning, building skills and growing your digital future.</p></div></section>
+<section class="section"><div class="container"><div class="academy-intro"><div><div class="eyebrow">ACADEMY STORE</div><h2>Volume books, ready when you are.</h2><p class="muted">New Academy volumes will be uploaded through the Admin dashboard. This space is intentionally reserved for your official MasterTech Academy books.</p></div><div class="academy-lockup">🎓<strong>MASTERTECH<br/>ACADEMY</strong></div></div><div class="academy-tools"><input class="field" id="digitalSearch" placeholder="Search by volume, title, author or topic..."/><select class="field" id="digitalCategory"><option value="all">All Academy Volumes</option><option value="ebook">E-books</option><option value="template">Templates</option><option value="software">Software</option></select><select class="field" id="digitalSort"><option value="featured">Featured first</option><option value="newest">Newest</option><option value="low">Price: Low to High</option><option value="high">Price: High to Low</option><option value="name">Name A–Z</option></select><span class="academy-count" id="digitalCount"></span></div><div class="product-grid academy-grid" id="digitalGrid"></div></div></section>
+</section>
+
+<section class="page" id="page-laptops">
+<section class="page-hero"><div class="container"><div class="eyebrow">Tech Store</div><h1>Laptops</h1><p>Explore laptops for business, study, development, creativity and everyday productivity.</p></div></section>
+<section class="section"><div class="container"><div class="filters"><input class="field" id="laptopSearch" placeholder="Search laptops..."/><select id="brand"><option value="all">All Brands</option><option>Dell</option><option>HP</option><option>Apple</option><option>Lenovo</option></select><select id="ram"><option value="all">All RAM</option><option value="8">8GB</option><option value="16">16GB</option><option value="32">32GB</option></select><select id="storage"><option value="all">All Storage</option><option value="256">256GB</option><option value="512">512GB</option><option value="1000">1TB</option></select><select id="sort"><option value="featured">Featured</option><option value="low">Price: Low</option><option value="high">Price: High</option><option value="name">Name A-Z</option></select></div><div class="product-grid" id="laptopGrid"></div></div></section>
+</section>
+
+<section class="page" id="page-cart">
+<section class="page-hero"><div class="container"><div class="eyebrow">Your Selection</div><h1>Shopping Cart</h1><p>Review your selected products before checkout.</p></div></section>
+<section class="section"><div class="container" id="cartContent"></div></section>
+</section>
+
+<section class="page" id="page-checkout">
+<section class="page-hero"><div class="container"><div class="eyebrow">Order Request</div><h1>Checkout</h1><p>Submit your details and we'll prepare the order. We do not process payments on this website. Your request is sent by email and saved for MasterTech.</p></div></section>
+<section class="section"><div class="container service-detail"><div class="form-card"><form id="checkoutForm"><input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0"><div class="form-grid"><div class="form-group"><label>Full Name *</label><input name="name" required=""/></div><div class="form-group"><label>Email *</label><input name="email" required="" type="email"/></div><div class="form-group"><label>Phone *</label><input name="phone" required=""/></div><div class="form-group"><label>Address *</label><input name="address" required=""/></div><div class="form-group full"><label>Notes</label><textarea name="notes" placeholder="Delivery notes or extra order details..."></textarea></div><div class="form-group full"><label>Comment / Feedback</label><textarea name="comment" placeholder="Share a comment about your experience or request..."></textarea></div><div class="form-group full"><label><input name="liked" style="width:auto;margin-right:8px" type="checkbox" value="Yes"/> I like the MasterTech website/service</label></div></div><button class="btn btn-blue" type="submit">Send Order →</button></form></div><div id="checkoutSummary"></div></div></section>
+</section>
+
+<section class="page" id="page-thank-you"><div class="container"><div class="confirm"><div class="check">✓</div><div class="eyebrow" style="margin-top:20px">Order Received</div><h1 style="font-size:42px;letter-spacing:-2px">Thank you!</h1><p class="muted" style="font-size:12px">Your order request has been received. MasterTech will confirm the order and payment details by email.</p><div class="order-box" id="thankOrder"></div><br/><a class="btn" data-route="home" href="#home">Back Home</a> <a class="btn" data-route="laptops" href="#laptops">Continue Shopping</a></div></div></section>
+
+<section class="page" id="page-contact">
+<section class="page-hero"><div class="container"><div class="eyebrow">Let's Connect</div><h1>Contact MasterTech</h1><p>Have a project, question or product enquiry? Let's talk.</p></div></section>
+<section class="section"><div class="container contact-grid"><div><div class="eyebrow">Contact Information</div><h2 style="font-size:30px;line-height:1.1;margin-top:6px">Let's talk technology.</h2><div class="contact-cards"><div class="contact-card"><div>☎</div><div><small>Phone</small><strong id="bizPhone">+27 777 234 5788</strong></div></div><div class="contact-card"><div>✉</div><div><small>Email</small><strong id="bizEmail">hello@mastertech.com</strong></div></div><div class="contact-card"><div>⌖</div><div><small>Location</small><strong id="bizLocation">Zimbabwe / Remote</strong></div></div></div><div class="socials"><a aria-label="Facebook" href="#">f</a><a aria-label="Instagram" href="#">◎</a><a aria-label="LinkedIn" href="#">in</a><a aria-label="WhatsApp" href="#">W</a></div></div><div class="form-card"><form id="contactForm"><input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0"><div class="form-group"><label>Your Name *</label><input name="name" required=""/></div><div class="form-group"><label>Email *</label><input name="email" required="" type="email"/></div><div class="form-group"><label>Subject</label><input name="subject"/></div><div class="form-group"><label>Message *</label><textarea name="message" required=""></textarea></div><button class="btn btn-blue" type="submit">Send Message →</button></form></div></div></section>
+</section>
+
+<section class="page owner" id="page-admin">
+<section class="page-hero"><div class="container"><div class="eyebrow">Private Admin Area</div><h1>MasterTech Admin Dashboard</h1><p>Manage products, orders, enquiries and website settings from one place.</p></div></section>
+<section class="section"><div class="container">
+<div class="form-card" id="adminLogin" style="max-width:430px">
+<div class="eyebrow">Admin Access</div><h2 style="font-size:25px;margin:6px 0">Welcome back.</h2><p class="muted" style="font-size:10px;margin-bottom:15px">Enter the admin password to open the dashboard.</p>
+<form id="adminLoginForm"><div class="form-group"><label>Admin Password</label><input id="adminPin" autocomplete="current-password" placeholder="Enter admin password" required="" type="password"/></div><div class="form-group" id="totpWrap" style="display:none"><label>2FA Code</label><input id="adminTotp" inputmode="numeric" autocomplete="one-time-code" placeholder="6-digit code" maxlength="6"/></div><button class="btn btn-blue" style="margin-top:12px" type="submit">Open Dashboard →</button></form>
+<p class="muted" style="font-size:8px;margin-top:12px">Admin access is protected by the password configured on the server.</p>
+</div>
+<div class="hidden" id="adminDashboard">
+<div class="admin-note">Admin changes are saved to the server and reflected across devices.</div>
+<div class="admin-wrap">
+<aside class="admin-sidebar">
+<button class="admin-tab active" data-admin-tab="overview" type="button">▦ Overview</button>
+<button class="admin-tab" data-admin-tab="products" type="button">▣ Products &amp; Academy</button>
+<button class="admin-tab" data-admin-tab="orders" type="button">◷ Orders</button>
+<button class="admin-tab" data-admin-tab="messages" type="button">✉ Messages</button>
+<button class="admin-tab" data-admin-tab="audit" type="button">▤ Audit</button>
+<button class="admin-tab" data-admin-tab="settings" type="button">⚙ Site Settings</button>
+<button class="admin-tab" id="adminLogoutBtn" type="button">↪ Lock Admin</button>
+</aside>
+<div>
+
+<div class="admin-panel active" data-admin-panel="overview">
+<div class="admin-head"><div><div class="eyebrow">Dashboard</div><h2>Overview</h2></div><button class="btn btn-blue" type="button" onclick="adminTab('products');resetAdminProductForm()">+ Add Product</button></div>
+<div class="admin-stat-grid"><div class="admin-stat"><small>Total Products</small><strong id="admProducts">0</strong></div><div class="admin-stat"><small>Academy</small><strong id="admAcademy">0</strong></div><div class="admin-stat"><small>Orders</small><strong id="admOrders">0</strong></div><div class="admin-stat"><small>Messages</small><strong id="admMessages">0</strong></div><div class="admin-stat"><small>Order Value</small><strong id="admRevenue">$0</strong></div><div class="admin-stat"><small>Drafts</small><strong id="admDrafts">0</strong></div></div>
+<div class="admin-card"><h3 style="font-size:13px;margin-bottom:10px">Recent Orders</h3><div id="admRecentOrders"></div></div>
+</div>
+
+<div class="admin-panel" data-admin-panel="products">
+<div class="admin-head"><div><div class="eyebrow">No-Code Store Manager</div><h2>Catalog &amp; Academy</h2></div><button class="btn btn-blue" type="button" onclick="resetAdminProductForm()">+ Add Product</button></div>
+<div class="admin-toolbar"><input class="field" id="adminCatalogSearch" placeholder="Search products..."/><select class="field" id="adminCatalogFilter"><option value="all">All products</option><option value="laptop">Laptops</option><option value="digital">Academy / Digital</option><option value="published">Published</option><option value="draft">Drafts</option></select><select class="field" id="adminCatalogSort"><option value="updated">Recently updated</option><option value="name">Name A–Z</option><option value="price-low">Price low</option><option value="price-high">Price high</option></select></div>
+<div class="admin-bulk" id="adminBulkBar"><b id="adminSelectedCount">0 selected</b><button class="btn" type="button" onclick="bulkPublish(true)">Publish</button><button class="btn" type="button" onclick="bulkPublish(false)">Unpublish</button><button class="btn danger" type="button" onclick="bulkDelete()">Delete</button></div>
+<div class="admin-grid"><div class="admin-card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><h3 style="font-size:13px">Your Catalog</h3><label style="font-size:8px;color:#8191a7"><input id="selectAllProducts" type="checkbox" style="width:auto"> Select all</label></div><div class="admin-product-list pro" id="adminProductList"></div></div>
+<div class="admin-form"><h3 id="adminProductTitle">Add New Product</h3><p class="muted" style="font-size:9px;margin:-6px 0 13px">Create products, Academy volumes and laptop listings without editing code.</p><form id="adminProductForm"><input name="id" type="hidden"/><div class="form-grid"><div class="form-group full"><label>Product / Volume Name *</label><input name="name" required="" placeholder="e.g. MasterTech Academy — Volume 1"/></div><div class="form-group"><label>Product Type</label><select name="type"><option value="laptop">Laptop</option><option value="digital">Academy / Digital</option></select></div><div class="form-group"><label>Category</label><select name="category"><option value="academy">Academy Volume</option><option value="ebook">E-book</option><option value="template">Template</option><option value="software">Software</option></select></div><div class="form-group"><label>Volume</label><input name="volume" placeholder="Volume 1"/></div><div class="form-group"><label>Author</label><input name="author" placeholder="MasterTech Academy"/></div><div class="form-group"><label>SKU</label><input name="sku" placeholder="MT-ACA-001"/></div><div class="form-group"><label>Price *</label><input min="0" name="price" required="" step="0.01" type="number"/></div><div class="form-group"><label>Stock (0 = unlimited)</label><input min="0" name="stock" step="1" type="number" value="0"/></div><div class="form-group"><label>Badge</label><input name="tag" placeholder="New / Bestseller / Featured"/></div><div class="form-group"><label>Icon</label><input name="emoji" placeholder="▤"/></div><div class="form-group"><label>Tags</label><input name="tags" placeholder="coding, business, beginner"/></div><div class="form-group"><label>Brand (Laptop)</label><input name="brand" placeholder="Dell / HP / Apple / Lenovo"/></div><div class="form-group"><label>RAM (GB)</label><input min="0" name="ram" type="number"/></div><div class="form-group"><label>Storage (GB)</label><input min="0" name="storage" type="number"/></div><div class="form-group full"><label>Cover Image URL</label><input name="image" placeholder="Paste image URL or upload below"/></div><div class="form-group full upload-row"><div class="form-group"><label>Upload Cover</label><input id="coverUpload" accept="image/png,image/jpeg,image/webp" type="file"/></div><button class="btn" id="uploadCoverBtn" type="button">Upload Cover</button></div><div class="form-group full"><label>Digital File URL</label><input name="fileUrl" placeholder="Upload a PDF/EPUB/ZIP or paste a secure file URL"/></div><div class="form-group full upload-row"><div class="form-group"><label>Upload Digital File (max 25MB)</label><input id="productFileUpload" accept="application/pdf,application/zip,application/epub+zip" type="file"/></div><button class="btn" id="uploadProductBtn" type="button">Upload File</button></div><div class="form-group full"><label>Preview URL</label><input name="previewUrl" placeholder="Optional preview / sample link"/></div><div class="form-group full"><label>Description</label><textarea name="description" placeholder="What does the customer get? Who is it for? What will they learn?"></textarea></div><div class="form-group"><label><input name="featured" type="checkbox" value="true" style="width:auto;margin-right:7px"/> Featured product</label></div><div class="form-group"><label><input name="published" type="checkbox" value="true" checked="" style="width:auto;margin-right:7px"/> Published on store</label></div></div><div class="buttons" style="margin-top:12px"><button class="btn btn-blue" type="submit">Save Product</button><button class="btn" type="button" onclick="resetAdminProductForm()">Clear</button></div></form></div>
+</div>
+</div>
+
+<div class="admin-panel" data-admin-panel="orders">
+<div class="admin-head"><div><div class="eyebrow">Sales</div><h2>Orders</h2></div><button class="btn" type="button" onclick="clearOrders()">Clear Order History</button></div>
+<div class="admin-card"><div id="adminOrdersList"></div><div id="adminOrdersPager" style="margin-top:10px"></div></div>
+</div>
+
+<div class="admin-panel" data-admin-panel="messages">
+<div class="admin-head"><div><div class="eyebrow">Inbox</div><h2>Messages &amp; Enquiries</h2></div><button class="btn" type="button" onclick="clearMessages()">Clear Messages</button></div>
+<div class="admin-card"><div id="adminMessagesList"></div><div id="adminMessagesPager" style="margin-top:10px"></div></div>
+</div>
+
+<div class="admin-panel" data-admin-panel="audit">
+<div class="admin-head"><div><div class="eyebrow">Security</div><h2>Audit Log</h2></div></div>
+<div class="admin-card"><div id="adminAuditList"></div><div id="adminAuditPager" style="margin-top:10px"></div></div>
+</div>
+
+<div class="admin-panel" data-admin-panel="settings">
+<div class="admin-head"><div><div class="eyebrow">Configuration</div><h2>Site Settings</h2></div></div>
+<div class="admin-form"><form id="adminSettingsForm"><div class="form-grid"><div class="form-group"><label>Business Phone</label><input name="phone"/></div><div class="form-group"><label>Business Email</label><input name="email"/></div><div class="form-group"><label>Location</label><input name="location"/></div><div class="form-group"><label>WhatsApp / Social Link</label><input name="whatsapp"/></div><div class="form-group"><label>Facebook Link</label><input name="facebook"/></div><div class="form-group"><label>Instagram Link</label><input name="instagram"/></div><div class="form-group"><label>LinkedIn Link</label><input name="linkedin"/></div><div class="form-group"><label>Currency Symbol</label><input name="currency" placeholder="$"/></div></div><button class="btn btn-blue" style="margin-top:13px" type="submit">Save Settings</button></form></div>
+
+<div class="admin-card security-card" style="margin-top:14px"><h3 style="font-size:13px">Two-Factor Authentication</h3><p class="muted" style="font-size:9px;margin:5px 0 12px">Protect the admin dashboard with a 6-digit code from an authenticator app.</p><div id="totpStatus" class="muted" style="font-size:9px;margin-bottom:10px"></div><button class="btn" id="totpSetupBtn" type="button">Enable 2FA</button> <button class="btn danger hidden" id="totpDisableBtn" type="button">Disable 2FA</button><div id="totpSetupBox" class="hidden" style="margin-top:12px;padding:12px;border:1px dashed #34588d;border-radius:10px"><p class="muted" style="font-size:9px">Add this secret to your authenticator app, then enter the code below to confirm.</p><div style="word-break:break-all;font-family:monospace;font-size:10px;margin:8px 0;color:#9edcff" id="totpSecretDisplay"></div><div class="form-group"><label>Enter 6-digit code</label><input id="totpConfirmCode" inputmode="numeric" maxlength="6"/></div><button class="btn btn-blue" id="totpConfirmBtn" type="button" style="margin-top:8px">Confirm &amp; Enable</button></div></div>
+
+<div class="admin-card security-card" style="margin-top:14px"><h3 style="font-size:13px">Change Admin Password</h3><p class="muted" style="font-size:9px;margin:5px 0 12px">Use 12+ characters.</p><form id="adminPasswordForm"><div class="form-grid"><div class="form-group"><label>Current Password</label><input name="currentPassword" autocomplete="current-password" required type="password"/></div><div class="form-group"><label>New Password</label><input name="newPassword" minlength="12" autocomplete="new-password" required type="password"/></div></div><button class="btn btn-blue" style="margin-top:12px" type="submit">Change Admin Password</button></form></div>
+
+<div class="admin-card" style="margin-top:14px"><h3 style="font-size:13px">Backups</h3><p class="muted" style="font-size:9px;margin:5px 0 12px">Export your catalog and settings as a JSON file.</p><button class="btn" type="button" onclick="exportAdminBackup()">Export Backup JSON</button></div>
+</div>
+
+</div>
+</div>
+</div>
+</div></section>
+</section>
+
+</main>
+
+<footer><div class="container footer-grid">
+<div><div class="logo" style="font-size:20px"><span class="logo-mark">M</span>Master<span>Tech</span></div><p style="margin-top:10px;max-width:250px">We build websites, apps and designs that help businesses grow and brands stand out.</p><div class="socials"><a href="#">f</a><a href="#">◎</a><a href="#">in</a></div></div>
+<div><h4>Quick Links</h4><ul><li><a data-route="home" href="#home">Home</a></li><li><a data-route="web-development" href="#web-development">Websites</a></li><li><a data-route="academy" href="#academy">Academy</a></li><li><a data-route="contact" href="#contact">Contact</a></li></ul></div>
+<div><h4>Services</h4><ul><li><a data-route="web-development" href="#web-development">Websites</a></li><li><a data-route="app-development" href="#app-development">Apps</a></li><li><a data-route="posters" href="#posters">Posters &amp; Design</a></li><li><a data-route="laptops" href="#laptops">Laptops</a></li></ul></div>
+<div><h4>Support</h4><ul><li><a data-route="contact" href="#contact">Help Center</a></li><li><a data-route="contact" href="#contact">Terms</a></li><li><a data-route="contact" href="#contact">Privacy</a></li><li><a data-route="contact" href="#contact">Contact Support</a></li></ul></div>
+<div><h4>Newsletter</h4><p>Stay updated with tips, offers and latest updates.</p><form class="newsletter" id="newsletter"><input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0"><input placeholder="Your email address" required="" type="email"/><button type="submit">➤</button></form></div>
+</div><div class="container copyright"><span>© <span id="year"></span> MasterTech. All rights reserved.</span><span>Built with precision by MasterTech</span></div></footer>
+
+<div class="modal" id="modal"><div class="modal-box"><button class="close" type="button" onclick="closeModal()" aria-label="Close">×</button><div id="modalContent"></div></div></div>
+<div class="toastbox" id="toastbox" aria-live="polite" aria-atomic="true"></div>
+<button id="top" type="button" aria-label="Back to top">↑</button>
+
+<script>
+"use strict";
+
+/* =========================================================
+   MasterTech v7 — single client script.
+   One admin bridge. One submit handler. No duplicate systems.
+   ========================================================= */
+
+const DEMO_LAPTOPS = [
+  {id:"lap01",name:"Dell Latitude 5420",brand:"Dell",ram:16,storage:512,price:650,emoji:"▱",tag:"Popular",description:"Reliable business laptop for productivity and professional work."},
+  {id:"lap02",name:"Dell Latitude 7490",brand:"Dell",ram:16,storage:256,price:520,emoji:"▱",tag:"Value",description:"Professional productivity laptop for work and study."},
+  {id:"lap03",name:"Dell XPS 13",brand:"Dell",ram:16,storage:512,price:1100,emoji:"▱",tag:"Premium",description:"Compact premium laptop for developers and professionals."},
+  {id:"lap04",name:"HP EliteBook 840 G7",brand:"HP",ram:16,storage:512,price:720,emoji:"▱",tag:"Business",description:"Premium business notebook with a professional design."},
+  {id:"lap05",name:"HP ProBook 450 G8",brand:"HP",ram:8,storage:512,price:590,emoji:"▱",tag:"Value",description:"Balanced laptop for school, office and everyday tasks."},
+  {id:"lap06",name:"HP ZBook Studio",brand:"HP",ram:32,storage:1000,price:1450,emoji:"▱",tag:"Power",description:"High-performance workstation for demanding creative work."},
+  {id:"lap07",name:"MacBook Air M2",brand:"Apple",ram:8,storage:256,price:950,emoji:"◉",tag:"Popular",description:"Lightweight Apple laptop for everyday productivity."},
+  {id:"lap08",name:"MacBook Air M3",brand:"Apple",ram:16,storage:512,price:1350,emoji:"◉",tag:"New",description:"Modern Apple laptop with excellent efficiency and performance."},
+  {id:"lap09",name:"Lenovo ThinkPad T14",brand:"Lenovo",ram:16,storage:512,price:750,emoji:"▱",tag:"Business",description:"Durable professional laptop built for productivity."},
+  {id:"lap10",name:"Lenovo IdeaPad 5",brand:"Lenovo",ram:8,storage:512,price:570,emoji:"▱",tag:"Value",description:"Affordable all-round laptop for work and study."},
+  {id:"lap11",name:"Lenovo ThinkPad X1 Carbon",brand:"Lenovo",ram:32,storage:1000,price:1250,emoji:"▱",tag:"Premium",description:"Lightweight high-end business laptop."},
+  {id:"lap12",name:"Lenovo Legion 5",brand:"Lenovo",ram:32,storage:1000,price:1400,emoji:"▱",tag:"Performance",description:"Powerful laptop for development, creation and demanding applications."}
+];
+
+const DEMO_POSTERS=[
+  {id:"p01",name:"Business Promotion",category:"business",emoji:"01",desc:"Corporate promotional design"},
+  {id:"p02",name:"Grand Opening",category:"business",emoji:"02",desc:"Premium grand opening concept"},
+  {id:"p03",name:"Music Event",category:"events",emoji:"03",desc:"Modern event poster concept"},
+  {id:"p04",name:"Conference",category:"events",emoji:"04",desc:"Professional conference artwork"},
+  {id:"p05",name:"Social Campaign",category:"social",emoji:"05",desc:"Social media campaign visual"},
+  {id:"p06",name:"Product Promotion",category:"social",emoji:"06",desc:"Digital product promotion artwork"},
+  {id:"p07",name:"Business Services",category:"business",emoji:"07",desc:"Services advertising concept"},
+  {id:"p08",name:"Community Event",category:"events",emoji:"08",desc:"Community event promotional poster"}
+];
+
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mbgjdewn';
+const API = '/api';
+
+const CARTKEY = "mastertech_cart_v3";
+const SETTINGSKEY = "mastertech_settings_v3";
+const TOKENKEY = "mastertech_api_token_v7";
+const ADMINKEY = "mastertech_admin_v7";
+
+let catalog = { laptops: DEMO_LAPTOPS.slice(), digital: [] };
+let business = { phone:"+27 777 234 5788", email:"hello@mastertech.com", location:"Zimbabwe / Remote" };
+let cart = JSON.parse(localStorage.getItem(CARTKEY) || "[]");
+let lastOrder = null;
+let csrfToken = "";
+let pager = { orders: 0, messages: 0, audit: 0 };
+
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+const esc = v => String(v ?? "").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));
+
+function money(n){
+  const st = JSON.parse(localStorage.getItem(SETTINGSKEY) || "{}");
+  const cur = st.currency || "$";
+  return cur + Number(n || 0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+
+function persistCart(){ localStorage.setItem(CARTKEY, JSON.stringify(cart)); updateCartCount(); }
+
+function toast(msg, type){
+  const e = document.createElement("div");
+  e.className = "toast" + (type === "error" ? " error" : "");
+  e.textContent = msg;
+  $("#toastbox").appendChild(e);
+  setTimeout(() => e.remove(), 3200);
+}
+
+function updateCartCount(){
+  const el = $("#cartCount");
+  if(el) el.textContent = cart.reduce((a,b) => a + b.qty, 0);
+}
+
+/* ---------- Theme ---------- */
+function applyTheme(mode){
+  document.body.classList.toggle("light", mode === "light");
+  localStorage.setItem("mastertech_theme", mode);
+}
+function initTheme(){
+  const saved = localStorage.getItem("mastertech_theme");
+  applyTheme(saved === "light" ? "light" : "dark");
+  const btn = $("#themeToggle");
+  if(btn) btn.addEventListener("click", () => applyTheme(document.body.classList.contains("light") ? "dark" : "light"));
+}
+
+/* ---------- Routing ---------- */
+const ROUTES = ["home","web-development","app-development","posters","academy","laptops","cart","checkout","thank-you","contact","admin"];
+
+function route(name, push){
+  if(push === undefined) push = true;
+  if(!ROUTES.includes(name)) name = "home";
+  const target = $("#page-" + name);
+  if(!target) return;
+  $$(".page").forEach(p => p.classList.remove("active"));
+  target.classList.add("active");
+  $$(".navlinks a").forEach(a => a.classList.toggle("active", a.dataset.route === name));
+  if(push) history.pushState(null, "", "#" + name);
+  const nav = $("#navlinks");
+  if(nav) nav.classList.remove("open");
+  window.scrollTo({top:0, behavior:"smooth"});
+  updateCartCount();
+  if(name === "cart") renderCart();
+  if(name === "checkout") renderCheckout();
+  if(name === "thank-you") renderThank();
+  if(name === "admin") renderAdmin();
+}
+function fromHash(){ route(location.hash.slice(1) || "home", false); }
+
+document.addEventListener("click", e => {
+  const link = e.target.closest("[data-route]");
+  if(link){
+    e.preventDefault();
+    route(link.dataset.route);
+  }
+});
+window.addEventListener("hashchange", fromHash);
+window.addEventListener("popstate", fromHash);
+
+const mobileBtn = $("#mobileMenu");
+if(mobileBtn) mobileBtn.addEventListener("click", () => $("#navlinks").classList.toggle("open"));
+
+$$('.drop>button').forEach(b => b.addEventListener('click', e => {
+  if(window.innerWidth <= 780){
+    e.preventDefault();
+    const d = b.parentElement;
+    $$('.drop').forEach(x => { if(x !== d) x.classList.remove('mobile-open'); });
+    d.classList.toggle('mobile-open');
+  }
+}));
+
+/* ---------- Product rendering ---------- */
+function productCard(p, type){
+  const meta = type === "laptop"
+    ? `${esc(p.brand || "")} • ${esc(p.ram || "-")}GB RAM • ${p.storage >= 1000 ? "1TB" : (esc(p.storage) || "-") + "GB"}`
+    : (p.author ? `By ${esc(p.author)}` : (p.category === "academy" ? "MasterTech Academy Volume" : esc(p.category || "Digital Product")));
+  const volume = p.volume ? `<div class="volume">${esc(p.volume)}</div>` : "";
+  const safeEmoji = esc(p.emoji || "▱");
+  const img = p.image
+    ? `<img src="${esc(p.image)}" alt="${esc(p.name)}" onerror="this.remove()" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`
+    : `<div class="device-symbol">${safeEmoji}</div>`;
+  const stock = p.type === "laptop" && p.stock > 0 && p.stock <= 2
+    ? `<div class="admin-chip off" style="margin-top:5px">Low stock (${p.stock})</div>`
+    : "";
+  return `<article class="product">
+    <div class="product-image"><span class="tag">${esc(p.tag || "Featured")}</span>${img}</div>
+    <div class="product-body">
+      <div class="cat">${type === "laptop" ? "Laptop" : esc(p.category || "Academy")}</div>
+      <h3>${esc(p.name)}</h3>${volume}
+      <div class="meta">${meta}</div>${stock}
+      <div class="product-bottom">
+        <span class="price">${money(p.price)}</span>
+        <div>
+          <button class="mini" type="button" onclick="viewProduct('${esc(p.id)}','${esc(type)}')">View</button>
+          <button class="mini" type="button" onclick="addToCart('${esc(p.id)}','${esc(type)}')">+ Cart</button>
+        </div>
+      </div>
+    </div>
+  </article>`;
+}
+
+function renderLaptops(){
+  let list = catalog.laptops.filter(p => p.published !== false);
+  const q = ($("#laptopSearch")?.value || "").toLowerCase();
+  const brand = $("#brand")?.value || "all";
+  const ram = $("#ram")?.value || "all";
+  const storage = $("#storage")?.value || "all";
+  const sort = $("#sort")?.value || "featured";
+  if(q) list = list.filter(x => (x.name + " " + x.brand).toLowerCase().includes(q));
+  if(brand !== "all") list = list.filter(x => x.brand === brand);
+  if(ram !== "all") list = list.filter(x => String(x.ram) === ram);
+  if(storage !== "all") list = list.filter(x => String(x.storage) === storage);
+  if(sort === "low") list.sort((a,b) => a.price - b.price);
+  if(sort === "high") list.sort((a,b) => b.price - a.price);
+  if(sort === "name") list.sort((a,b) => a.name.localeCompare(b.name));
+  const el = $("#laptopGrid");
+  if(!el) return;
+  el.innerHTML = list.length
+    ? list.map(x => productCard(x, "laptop")).join("")
+    : `<div class="empty" style="grid-column:1/-1">No laptops match your filters.</div>`;
+}
+
+function renderDigital(){
+  let list = catalog.digital.filter(p => p.published !== false);
+  const q = ($("#digitalSearch")?.value || "").toLowerCase();
+  const cat = $("#digitalCategory")?.value || "all";
+  const sort = $("#digitalSort")?.value || "featured";
+  if(cat !== "all") list = list.filter(x => x.category === cat);
+  if(q) list = list.filter(x => (x.name + " " + (x.description||"") + " " + (x.author||"") + " " + (x.volume||"") + " " + ((x.tags||[]).join(" "))).toLowerCase().includes(q));
+  if(sort === "low") list.sort((a,b) => a.price - b.price);
+  if(sort === "high") list.sort((a,b) => b.price - a.price);
+  if(sort === "name") list.sort((a,b) => a.name.localeCompare(b.name));
+  if(sort === "newest") list.sort((a,b) => String(b.updatedAt||"").localeCompare(String(a.updatedAt||"")));
+  if(sort === "featured") list.sort((a,b) => Number(b.featured) - Number(a.featured));
+  const count = $("#digitalCount");
+  if(count) count.textContent = list.length + " product" + (list.length === 1 ? "" : "s");
+  const el = $("#digitalGrid");
+  if(!el) return;
+  el.innerHTML = list.length
+    ? list.map(x => productCard(x, "digital")).join("")
+    : `<div class="academy-empty" style="grid-column:1/-1"><div class="academy-empty-icon">🎓</div><h3>No Academy volumes yet</h3><p>New Academy volumes will appear here once uploaded from the Admin dashboard.</p></div>`;
+}
+
+function renderPosters(filter){
+  if(filter === undefined) filter = "all";
+  const list = filter === "all" ? DEMO_POSTERS : DEMO_POSTERS.filter(x => x.category === filter);
+  const el = $("#posterGrid");
+  if(!el) return;
+  el.innerHTML = list.map(x => {
+    const bg = x.category === "business"
+      ? "linear-gradient(135deg,#123b78,#06162c)"
+      : x.category === "events"
+        ? "linear-gradient(135deg,#55329d,#071a36)"
+        : "linear-gradient(135deg,#007a92,#06364e)";
+    return `<article class="poster"><div class="poster-art" style="background:${bg}">MASTER<span>TECH<br>${esc(x.emoji)}</span></div><div class="poster-info"><b>${esc(x.name)}</b><small>${esc(x.desc)}</small></div></article>`;
+  }).join("");
+}
+
+/* ---------- Cart ---------- */
+function totals(){ return cart.reduce((a,x) => a + x.price * x.qty, 0); }
+
+function addToCart(id, type){
+  const p = (type === "laptop" ? catalog.laptops : catalog.digital).find(x => x.id === id);
+  if(!p){ toast("Product unavailable", "error"); return; }
+  const existing = cart.find(x => x.id === id);
+  if(existing) existing.qty += 1;
+  else cart.push({id, type, name: p.name, price: p.price, emoji: p.emoji, qty: 1});
+  persistCart();
+  toast(p.name + " added to cart ✓");
+}
+
+function findProduct(id, type){
+  return (type === "laptop" ? catalog.laptops : catalog.digital).find(x => x.id === id);
+}
+
+function viewProduct(id, type){
+  const p = findProduct(id, type);
+  if(!p) return;
+  const desc = esc(p.description || "No description provided.");
+  const specs = type === "laptop"
+    ? `<div class="stack"><div>${esc(p.ram)}GB<strong>RAM</strong></div><div>${p.storage >= 1000 ? "1TB" : esc(p.storage) + "GB"}<strong>Storage</strong></div><div>${esc(p.brand)}<strong>Brand</strong></div></div>`
+    : "";
+  const emoji = esc(p.emoji || "▱");
+  const safeId = esc(p.id);
+  const safeType = esc(type);
+  $("#modalContent").innerHTML = `
+    <div class="eyebrow">${esc(type === "laptop" ? p.brand : p.tag)}</div>
+    <h2 style="font-size:27px;margin-top:4px">${esc(p.name)}</h2>
+    <div class="product-image" style="height:230px;margin:18px 0;border-radius:10px"><div class="device-symbol">${emoji}</div></div>
+    <p class="muted" style="font-size:11px">${desc}</p>${specs}
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px">
+      <b style="font-size:21px">${money(p.price)}</b>
+      <button class="btn btn-blue" type="button" onclick="addToCart('${safeId}','${safeType}');closeModal()">Add to Cart</button>
+    </div>`;
+  $("#modal").classList.add("open");
+}
+function closeModal(){ $("#modal").classList.remove("open"); }
+const modal = $("#modal");
+if(modal) modal.addEventListener("click", e => { if(e.target.id === "modal") closeModal(); });
+
+function renderCart(){
+  const el = $("#cartContent");
+  if(!el) return;
+  if(!cart.length){
+    el.innerHTML = `<div class="empty"><div>🛒</div><h2>Your cart is empty</h2><p>Add products from the store to get started.</p><br><a class="btn btn-blue" href="#laptops" data-route="laptops">Browse Laptops</a></div>`;
+    return;
+  }
+  el.innerHTML = `<div class="cart-layout">
+    <div class="cart-list">
+      ${cart.map(x => `<div class="cart-item">
+        <div class="thumb">${esc(x.emoji)}</div>
+        <div>
+          <h4>${esc(x.name)}</h4>
+          <small>${money(x.price)} each</small>
+          <div class="qty">
+            <button type="button" aria-label="Decrease quantity" onclick="changeQty('${esc(x.id)}',-1)">−</button>
+            <b>${x.qty}</b>
+            <button type="button" aria-label="Increase quantity" onclick="changeQty('${esc(x.id)}',1)">+</button>
+          </div>
+        </div>
+        <div>
+          <b>${money(x.price * x.qty)}</b><br>
+          <button class="remove" type="button" onclick="removeItem('${esc(x.id)}')">Remove</button>
+        </div>
+      </div>`).join("")}
+    </div>
+    <aside class="summary">
+      <h3>Order Summary</h3>
+      <div class="row"><span>Items</span><span>${cart.reduce((a,x) => a + x.qty, 0)}</span></div>
+      <div class="row"><span>Subtotal</span><span>${money(totals())}</span></div>
+      <div class="row"><span>Payment</span><span>Manual</span></div>
+      <div class="row total"><span>Total</span><span>${money(totals())}</span></div>
+      <button type="button" class="btn btn-cyan" style="width:100%;margin-top:15px" onclick="route('checkout')">Proceed to Checkout →</button>
+      <button type="button" class="btn" style="width:100%;margin-top:7px" onclick="clearCart()">Clear Cart</button>
+    </aside>
+  </div>`;
+}
+
+function changeQty(id, n){
+  const x = cart.find(c => c.id === id);
+  if(!x) return;
+  x.qty = Math.max(0, x.qty + n);
+  if(x.qty === 0) cart = cart.filter(c => c.id !== id);
+  persistCart();
+  renderCart();
+  if(location.hash === "#checkout") renderCheckout();
+}
+function clearCart(){ cart = []; persistCart(); renderCart(); if(location.hash === "#checkout") renderCheckout(); toast("Cart cleared"); }
+function removeItem(id){ cart = cart.filter(x => x.id !== id); persistCart(); renderCart(); toast("Product removed"); }
+
+function renderCheckout(){
+  const form = $("#checkoutForm");
+  const summary = $("#checkoutSummary");
+  if(!form || !summary) return;
+  const hasCart = cart.length > 0;
+  form.classList.toggle("hidden", !hasCart);
+  const submit = form.querySelector("button[type=submit]");
+  if(submit) submit.disabled = !hasCart;
+  summary.innerHTML = hasCart
+    ? `<aside class="summary">
+        <h3>Your Order</h3>
+        ${cart.map(x => `<div class="row"><span>${esc(x.name)}<small style="display:block;color:#71839a">${x.qty} × ${money(x.price)}</small></span><b>${money(x.qty * x.price)}</b></div>`).join("")}
+        <div class="row total"><span>Total</span><span>${money(totals())}</span></div>
+        <p class="muted" style="font-size:9px;margin-top:12px">No online payment is processed. Your order is sent for confirmation.</p>
+      </aside>`
+    : `<div class="empty"><div>🛒</div><h3>Your cart is empty.</h3><p>Add a product before checking out.</p><br><a class="btn btn-blue" href="#laptops" data-route="laptops">Browse Products</a></div>`;
+}
+
+function renderThank(){
+  const o = lastOrder;
+  const el = $("#thankOrder");
+  if(!el) return;
+  if(!o){ el.innerHTML = "<p>No recent order found.</p>"; return; }
+  el.innerHTML = `<h3>Order ${esc(o.orderId)}</h3>
+    <p class="muted" style="font-size:10px;margin:5px 0 15px">${esc(o.customer?.name || "")}<br>${esc(o.customer?.email || "")}<br>${esc(o.customer?.phone || "")}</p>
+    ${(o.items || []).map(x => `<div class="row"><span>${esc(x.name)} × ${Number(x.qty) || 0}</span><b>${money(x.price * x.qty)}</b></div>`).join("")}
+    <div class="row total"><span>Total</span><span>${money(o.total)}</span></div>`;
+}
+
+/* =========================================================
+   API BRIDGE
+   ========================================================= */
+async function apiFetch(path, opts){
+  opts = opts || {};
+  const headers = Object.assign({}, opts.headers || {});
+  headers["Content-Type"] = "application/json";
+  const token = sessionStorage.getItem(TOKENKEY);
+  if(token) headers.Authorization = "Bearer " + token;
+  if(csrfToken && opts.method && opts.method !== "GET" && opts.method !== "HEAD"){
+    headers["X-CSRF-Token"] = csrfToken;
+  }
+  const r = await fetch(API + path, Object.assign({}, opts, { headers }));
+  const data = await r.json().catch(() => ({}));
+  if(r.status === 401){
+    sessionStorage.removeItem(TOKENKEY);
+    sessionStorage.removeItem(ADMINKEY);
+  }
+  if(!r.ok) throw new Error(data.error || ("Request failed " + r.status));
+  return data;
+}
+
+async function loadCsrf(){
+  try {
+    const d = await apiFetch("/csrf");
+    csrfToken = d.token;
+  } catch(e){
+    csrfToken = "";
+  }
+}
+
+async function sendToFormspree(fd){
+  if(fd.get("_gotcha")) return { skipped: "honeypot" };
+  const r = await fetch(FORMSPREE_ENDPOINT, { method:"POST", body:fd, headers:{ Accept:"application/json" } });
+  const d = await r.json().catch(() => ({}));
+  if(!r.ok) throw new Error(d?.errors?.map(x => x.message).join(", ") || d?.error || ("Formspree failed " + r.status));
+  return d;
+}
+
+async function boot(){
+  await loadCsrf();
+  try {
+    const d = await apiFetch("/catalog");
+    catalog = d.catalog;
+    localStorage.setItem(SETTINGSKEY, JSON.stringify(d.settings || {}));
+    business = {
+      phone: d.settings?.phone || business.phone,
+      email: d.settings?.email || business.email,
+      location: d.settings?.location || business.location
+    };
+    syncBusiness();
+  } catch(e){
+    console.info("Standalone mode:", e.message);
+  }
+  renderLaptops();
+  renderDigital();
+  renderPosters();
+}
+
+/* ---------- Single submit handler for all forms ---------- */
+const inFlight = new WeakSet();
+
+document.addEventListener("submit", async e => {
+  const form = e.target;
+  const id = form.id;
+  if(!["checkoutForm","webForm","posterForm","contactForm","newsletter","adminLoginForm","adminProductForm","adminSettingsForm","adminPasswordForm"].includes(id)) return;
+  if(inFlight.has(form)){ e.preventDefault(); return; }
+  inFlight.add(form);
+
+  try {
+    /* ---------- CHECKOUT ---------- */
+    if(id === "checkoutForm"){
+      e.preventDefault();
+      if(!cart.length){ toast("Your cart is empty", "error"); route("laptops"); return; }
+      if(!form.reportValidity()) return;
+
+      const customer = Object.fromEntries(new FormData(form).entries());
+      const items = cart.map(x => ({id: x.id, qty: x.qty}));
+      const localTotal = totals();
+
+      const fd = new FormData();
+      fd.append("_subject", "MasterTech Order Request");
+      fd.append("_gotcha", form.querySelector('[name="_gotcha"]')?.value || "");
+      fd.append("form_type", "Order Request");
+      fd.append("email", customer.email || "");
+      fd.append("name", customer.name || "");
+      fd.append("customer_phone", customer.phone || "");
+      fd.append("customer_address", customer.address || "");
+      fd.append("notes", customer.notes || "");
+      fd.append("comment", customer.comment || "");
+      fd.append("liked", customer.liked || "No");
+      fd.append("items", cart.map(x => `${x.name} × ${x.qty} — ${money(x.price * x.qty)}`).join("\n"));
+      fd.append("total", money(localTotal));
+
+      let emailOk = false;
+      try { await sendToFormspree(fd); emailOk = true; }
+      catch(err){ console.warn("Formspree failed:", err.message); }
+
+      try {
+        const payload = { customer, items, total: localTotal, emailSent: emailOk };
+        const d = await apiFetch("/orders", {method:"POST", body: JSON.stringify(payload)});
+        lastOrder = d.order;
+      } catch(err){
+        if(!emailOk){ toast("Could not send order: " + err.message, "error"); return; }
+        lastOrder = {orderId: "MT-LOCAL-" + Date.now().toString(36).toUpperCase(), date: new Date().toISOString(), customer, items: cart.map(x => ({...x})), total: localTotal};
+      }
+
+      cart = [];
+      persistCart();
+      form.reset();
+      renderCheckout();
+      route("thank-you");
+      toast(emailOk ? "Order sent ✓" : "Order received — email pending ✓");
+      return;
+    }
+
+    /* ---------- NEWSLETTER ---------- */
+    if(id === "newsletter"){
+      e.preventDefault();
+      const input = form.querySelector('input[type=email]');
+      if(!input?.value) return;
+      const fd = new FormData();
+      fd.append("_subject", "MasterTech Newsletter Signup");
+      fd.append("_gotcha", form.querySelector('[name="_gotcha"]')?.value || "");
+      fd.append("form_type", "Newsletter Signup");
+      fd.append("email", input.value);
+      try { await sendToFormspree(fd); form.reset(); toast("Thanks for subscribing ✓"); }
+      catch(err){ toast("Could not subscribe: " + err.message, "error"); }
+      return;
+    }
+
+    /* ---------- GENERIC FORMS ---------- */
+    if(id === "webForm" || id === "posterForm" || id === "contactForm"){
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+      data.type = id === "webForm" ? "Project Request" : (id === "posterForm" ? "Poster Design Request" : "Contact Message");
+      const fd = new FormData();
+      Object.entries(data).forEach(([k,v]) => fd.append(k, v ?? ""));
+      fd.set("_gotcha", form.querySelector('[name="_gotcha"]')?.value || "");
+      fd.set("form_type", data.type);
+      fd.set("_subject", "MasterTech " + data.type);
+      if(data.email) fd.set("email", data.email);
+      try {
+        await sendToFormspree(fd);
+        try { await apiFetch("/messages", {method:"POST", body: JSON.stringify(data)}); } catch(err){ console.warn("Backend message save failed:", err.message); }
+        form.reset();
+        toast(id === "webForm" ? "Project request sent ✓" : (id === "posterForm" ? "Poster request sent ✓" : "Message sent ✓"));
+      } catch(err){ toast("Could not send: " + err.message, "error"); }
+      return;
+    }
+
+    /* ---------- ADMIN LOGIN ---------- */
+    if(id === "adminLoginForm"){
+      e.preventDefault();
+      try {
+        const password = $("#adminPin").value;
+        const totpCode = $("#adminTotp")?.value || "";
+        const d = await apiFetch("/admin/login", {method:"POST", body: JSON.stringify({password, totpCode})});
+        sessionStorage.setItem(TOKENKEY, d.token);
+        sessionStorage.setItem(ADMINKEY, "1");
+        csrfToken = d.csrf;
+        $("#adminPin").value = "";
+        if($("#adminTotp")) $("#adminTotp").value = "";
+        renderAdmin();
+        toast("Admin unlocked ✓");
+      } catch(err){
+        if(/2FA/i.test(err.message) && $("#totpWrap")){
+          $("#totpWrap").style.display = "block";
+        }
+        toast("Login failed: " + err.message, "error");
+      }
+      return;
+    }
+
+    /* ---------- ADMIN PRODUCT SAVE ---------- */
+    if(id === "adminProductForm"){
+      e.preventDefault();
+      try {
+        const f = new FormData(form);
+        const type = f.get("type");
+        const p = {
+          id: f.get("id") || ("custom-" + Date.now()),
+          name: f.get("name"),
+          price: Number(f.get("price")),
+          emoji: f.get("emoji") || "▤",
+          tag: f.get("tag") || "Featured",
+          description: f.get("description") || "",
+          image: f.get("image") || "",
+          type,
+          category: f.get("category") || "academy",
+          volume: f.get("volume") || "",
+          author: f.get("author") || "",
+          sku: f.get("sku") || "",
+          tags: String(f.get("tags") || "").split(",").map(x => x.trim()).filter(Boolean),
+          featured: f.get("featured") === "true",
+          published: f.get("published") === "true",
+          fileUrl: f.get("fileUrl") || "",
+          previewUrl: f.get("previewUrl") || "",
+          stock: Number(f.get("stock") || 0)
+        };
+        if(type === "laptop"){
+          p.brand = f.get("brand");
+          p.ram = Number(f.get("ram") || 8);
+          p.storage = Number(f.get("storage") || 256);
+        }
+        const d = await apiFetch("/admin/products", {method:"POST", body: JSON.stringify(p)});
+        catalog = d.catalog;
+        renderLaptops();
+        renderDigital();
+        renderAdmin();
+        resetAdminProductForm();
+        toast("Product saved ✓");
+      } catch(err){ toast("Could not save product: " + err.message, "error"); }
+      return;
+    }
+
+    /* ---------- ADMIN SETTINGS ---------- */
+    if(id === "adminSettingsForm"){
+      e.preventDefault();
+      try {
+        const st = Object.fromEntries(new FormData(form).entries());
+        const d = await apiFetch("/admin/settings", {method:"PUT", body: JSON.stringify(st)});
+        localStorage.setItem(SETTINGSKEY, JSON.stringify(d.settings));
+        business = { phone: d.settings.phone, email: d.settings.email, location: d.settings.location };
+        syncBusiness();
+        toast("Settings saved ✓");
+      } catch(err){ toast("Could not save settings: " + err.message, "error"); }
+      return;
+    }
+
+    /* ---------- ADMIN PASSWORD CHANGE ---------- */
+    if(id === "adminPasswordForm"){
+      e.preventDefault();
+      try {
+        const d = Object.fromEntries(new FormData(form).entries());
+        await apiFetch("/admin/password", {method:"PUT", body: JSON.stringify(d)});
+        form.reset();
+        toast("Admin password changed ✓");
+      } catch(err){ toast("Could not change password: " + err.message, "error"); }
+      return;
+    }
+  } finally {
+    inFlight.delete(form);
+  }
+});
+
+/* =========================================================
+   ADMIN RENDERING
+   ========================================================= */
+function adminIsOpen(){
+  return sessionStorage.getItem(ADMINKEY) === "1" && !!sessionStorage.getItem(TOKENKEY);
+}
+
+function renderAdmin(){
+  const login = $("#adminLogin");
+  const dash = $("#adminDashboard");
+  if(!login || !dash) return;
+  const open = adminIsOpen();
+  login.classList.toggle("hidden", open);
+  dash.classList.toggle("hidden", !open);
+  if(open){
+    loadAdminSettings();
+    refreshAdminDashboard();
+  }
+}
+
+async function refreshAdminDashboard(){
+  if(!adminIsOpen()) return;
+  try {
+    const d = await apiFetch("/admin/dashboard");
+    catalog = d.catalog;
+    localStorage.setItem(SETTINGSKEY, JSON.stringify(d.settings || {}));
+    business = { phone: d.settings?.phone || business.phone, email: d.settings?.email || business.email, location: d.settings?.location || business.location };
+    syncBusiness();
+    renderAdminStats(d.orders, d.messages);
+    renderAdminRecentOrders(d.orders);
+    renderAdminProducts();
+    renderAdminOrders();
+    renderAdminMessages();
+    renderAdminAudit();
+    renderTotpStatus();
+    loadAdminSettings();
+  } catch(err){
+    console.warn("Dashboard load failed:", err.message);
+  }
+}
+
+function renderAdminStats(orders, messages){
+  const products = catalog.laptops.length + catalog.digital.length;
+  setText("#admProducts", products);
+  setText("#admAcademy", catalog.digital.length);
+  setText("#admOrders", orders.length);
+  setText("#admMessages", messages.length);
+  setText("#admRevenue", money(orders.reduce((a,o) => a + Number(o.total || 0), 0)));
+  setText("#admDrafts", (catalog.laptops.concat(catalog.digital)).filter(p => p.published === false).length);
+}
+function setText(sel, val){ const el = $(sel); if(el) el.textContent = val; }
+
+function renderAdminRecentOrders(orders){
+  const el = $("#admRecentOrders");
+  if(!el) return;
+  el.innerHTML = orders.length
+    ? orders.slice(0,5).map(o => `<div class="row"><span><b>${esc(o.orderId)}</b><small style="display:block;color:#8191a7">${esc(o.customer?.name || "")} • ${new Date(o.date).toLocaleDateString()}</small></span><b>${money(o.total)}</b></div>`).join("")
+    : `<div class="empty" style="padding:35px 15px"><div style="font-size:25px">⌁</div><p>No orders yet.</p></div>`;
+}
+
+let selectedProducts = new Set();
+
+function filteredAdminProducts(){
+  let list = catalog.laptops.concat(catalog.digital);
+  const q = ($("#adminCatalogSearch")?.value || "").toLowerCase().trim();
+  const f = $("#adminCatalogFilter")?.value || "all";
+  const s = $("#adminCatalogSort")?.value || "updated";
+  if(q) list = list.filter(p => (p.name + " " + (p.author||"") + " " + (p.sku||"") + " " + (p.category||"")).toLowerCase().includes(q));
+  if(f === "laptop") list = list.filter(p => catalog.laptops.some(x => x.id === p.id));
+  if(f === "digital") list = list.filter(p => catalog.digital.some(x => x.id === p.id));
+  if(f === "published") list = list.filter(p => p.published !== false);
+  if(f === "draft") list = list.filter(p => p.published === false);
+  if(s === "name") list.sort((a,b) => a.name.localeCompare(b.name));
+  if(s === "price-low") list.sort((a,b) => a.price - b.price);
+  if(s === "price-high") list.sort((a,b) => b.price - a.price);
+  if(s === "updated") list.sort((a,b) => String(b.updatedAt||"").localeCompare(String(a.updatedAt||"")));
+  return list;
+}
+
+function renderAdminProducts(){
+  const el = $("#adminProductList");
+  if(!el) return;
+  const list = filteredAdminProducts();
+  el.innerHTML = list.length ? list.map(p => {
+    const type = catalog.laptops.some(x => x.id === p.id) ? "laptop" : "digital";
+    const checked = selectedProducts.has(p.id) ? "checked" : "";
+    const thumb = p.image ? `<img src="${esc(p.image)}" alt="">` : esc(p.emoji || "▤");
+    return `<div class="admin-product pro">
+      <div class="oi">${thumb}</div>
+      <div>
+        <div style="display:flex;gap:7px;align-items:center"><input class="product-select" data-id="${esc(p.id)}" ${checked} type="checkbox" style="width:auto"><h4>${esc(p.name)}</h4></div>
+        <div class="admin-product-meta">
+          <span>${money(p.price)}</span>
+          <span>${type === "laptop" ? esc(p.brand || "Laptop") : esc(p.category || "Academy")}</span>
+          ${p.volume ? `<span>${esc(p.volume)}</span>` : ""}
+          ${p.published === false ? '<span class="admin-chip off">Draft</span>' : '<span class="admin-chip">Live</span>'}
+          ${p.featured ? '<span class="admin-chip">Featured</span>' : ""}
+        </div>
+      </div>
+      <div class="admin-actions">
+        <button type="button" onclick="editAdminProduct('${esc(p.id)}')">Edit</button>
+        <button type="button" onclick="duplicateAdminProduct('${esc(p.id)}')">Duplicate</button>
+        <button class="danger" type="button" onclick="deleteAdminProduct('${esc(p.id)}')">Delete</button>
+      </div>
+    </div>`;
+  }).join("") : `<div class="empty" style="padding:35px 15px"><div style="font-size:25px">⌁</div><p>No products match your filters.</p></div>`;
+  $$(".product-select").forEach(c => c.onchange = () => { c.checked ? selectedProducts.add(c.dataset.id) : selectedProducts.delete(c.dataset.id); updateBulkBar(); });
+  updateBulkBar();
+}
+
+function updateBulkBar(){
+  const bar = $("#adminBulkBar");
+  if(!bar) return;
+  setText("#adminSelectedCount", selectedProducts.size + " selected");
+  bar.classList.toggle("show", selectedProducts.size > 0);
+}
+
+async function renderAdminOrders(){
+  const el = $("#adminOrdersList");
+  if(!el) return;
+  try {
+    const d = await apiFetch("/admin/orders?limit=20&offset=" + (pager.orders * 20));
+    const orders = d.items || [];
+    el.innerHTML = orders.length ? `<div style="overflow:auto"><table class="admin-table"><thead><tr><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th></tr></thead><tbody>${orders.map(o => `<tr><td><b>${esc(o.orderId)}</b></td><td>${esc(o.customer?.name || "")}<br><span class="muted">${esc(o.customer?.email || "")}</span><br><span class="muted">${esc(o.customer?.phone || "")}</span></td><td>${(o.items || []).reduce((a,x) => a + (Number(x.qty) || 0), 0)}</td><td><b>${money(o.total)}</b></td><td><select class="order-status" data-order-id="${esc(o.orderId)}">${["Pending","Confirmed","Processing","Completed","Cancelled"].map(s => `<option ${o.status === s ? "selected" : ""}>${s}</option>`).join("")}</select></td><td>${new Date(o.date).toLocaleString()}</td></tr>`).join("")}</tbody></table></div>` : `<div class="empty" style="padding:35px 15px"><div style="font-size:25px">⌁</div><p>No orders yet.</p></div>`;
+    el.querySelectorAll(".order-status").forEach(s => s.onchange = async () => {
+      try {
+        await apiFetch("/admin/orders/" + encodeURIComponent(s.dataset.orderId), {method:"PUT", body: JSON.stringify({status: s.value})});
+        toast("Order updated ✓");
+      } catch(err){ toast(err.message, "error"); }
+    });
+    renderPager("#adminOrdersPager", "orders", d.total, 20);
+  } catch(err){ el.innerHTML = `<div class="empty">${esc(err.message)}</div>`; }
+}
+
+async function renderAdminMessages(){
+  const el = $("#adminMessagesList");
+  if(!el) return;
+  try {
+    const d = await apiFetch("/admin/messages?limit=20&offset=" + (pager.messages * 20));
+    const msgs = d.items || [];
+    el.innerHTML = msgs.length ? msgs.map(m => `<div class="admin-card" style="margin-bottom:9px"><div style="display:flex;justify-content:space-between;gap:10px"><b style="font-size:11px">${esc(m.type || "Message")}</b><small class="muted">${new Date(m.date).toLocaleString()}</small></div><p style="font-size:10px;margin-top:7px"><b>${esc(m.name || "")}</b> • ${esc(m.email || "")} ${m.phone ? "• " + esc(m.phone) : ""}</p><p class="muted" style="font-size:10px;margin-top:5px;white-space:pre-wrap">${esc(m.message || "")}</p></div>`).join("") : `<div class="empty" style="padding:35px 15px"><div style="font-size:25px">⌁</div><p>No messages yet.</p></div>`;
+    renderPager("#adminMessagesPager", "messages", d.total, 20);
+  } catch(err){ el.innerHTML = `<div class="empty">${esc(err.message)}</div>`; }
+}
+
+async function renderAdminAudit(){
+  const el = $("#adminAuditList");
+  if(!el) return;
+  try {
+    const d = await apiFetch("/admin/audit?limit=20&offset=" + (pager.audit * 20));
+    const items = d.items || [];
+    el.innerHTML = items.length ? `<div style="overflow:auto"><table class="admin-table"><thead><tr><th>Time</th><th>Action</th><th>Target</th><th>IP</th></tr></thead><tbody>${items.map(a => `<tr><td>${new Date(a.ts).toLocaleString()}</td><td>${esc(a.action)}</td><td>${esc(a.target || "")}</td><td>${esc(a.ip || "")}</td></tr>`).join("")}</tbody></table></div>` : `<div class="empty" style="padding:35px 15px"><div style="font-size:25px">⌁</div><p>No audit entries yet.</p></div>`;
+    renderPager("#adminAuditPager", "audit", d.total, 20);
+  } catch(err){ el.innerHTML = `<div class="empty">${esc(err.message)}</div>`; }
+}
+
+function renderPager(sel, key, total, perPage){
+  const el = $(sel);
+  if(!el) return;
+  const pages = Math.max(1, Math.ceil(total / perPage));
+  const cur = pager[key];
+  el.innerHTML = `<button class="btn" type="button" ${cur === 0 ? "disabled" : ""} onclick="changePager('${key}',-1)">← Prev</button> <span class="muted" style="font-size:10px">Page ${cur + 1} of ${pages}</span> <button class="btn" type="button" ${cur >= pages - 1 ? "disabled" : ""} onclick="changePager('${key}',1)">Next →</button>`;
+}
+function changePager(key, delta){
+  pager[key] = Math.max(0, pager[key] + delta);
+  if(key === "orders") renderAdminOrders();
+  if(key === "messages") renderAdminMessages();
+  if(key === "audit") renderAdminAudit();
+}
+
+function editAdminProduct(id){
+  const p = catalog.laptops.concat(catalog.digital).find(x => x.id === id);
+  if(!p) return;
+  const f = $("#adminProductForm");
+  const fields = ["id","name","brand","category","volume","author","sku","price","tag","emoji","tags","image","fileUrl","previewUrl","description","ram","storage","stock"];
+  for(const k of fields){
+    if(f.elements[k]) f.elements[k].value = Array.isArray(p[k]) ? p[k].join(", ") : (p[k] ?? "");
+  }
+  if(f.elements.featured) f.elements.featured.checked = !!p.featured;
+  if(f.elements.published) f.elements.published.checked = p.published !== false;
+  f.elements.type.value = catalog.laptops.some(x => x.id === id) ? "laptop" : "digital";
+  setText("#adminProductTitle", "Edit " + p.name);
+  adminTab("products");
+  window.scrollTo({top: document.body.scrollHeight, behavior: "smooth"});
+}
+
+function resetAdminProductForm(){
+  const f = $("#adminProductForm");
+  if(!f) return;
+  f.reset();
+  f.elements.id.value = "";
+  f.elements.published.checked = true;
+  setText("#adminProductTitle", "Add New Product");
+  if($("#coverUpload")) $("#coverUpload").value = "";
+  if($("#productFileUpload")) $("#productFileUpload").value = "";
+}
+
+async function deleteAdminProduct(id){
+  if(!confirm("Delete this product from the catalog?")) return;
+  try {
+    const d = await apiFetch("/admin/products/" + encodeURIComponent(id), {method:"DELETE"});
+    catalog = d.catalog;
+    renderLaptops();
+    renderDigital();
+    renderAdminProducts();
+    toast("Product deleted");
+  } catch(err){ toast(err.message, "error"); }
+}
+
+async function duplicateAdminProduct(id){
+  const p = catalog.laptops.concat(catalog.digital).find(x => x.id === id);
+  if(!p) return;
+  const copy = Object.assign({}, p, {id: p.id + "-copy-" + Date.now().toString(36), name: p.name + " (Copy)", published: false});
+  delete copy.updatedAt;
+  try {
+    const d = await apiFetch("/admin/products", {method:"POST", body: JSON.stringify(copy)});
+    catalog = d.catalog;
+    renderAdminProducts();
+    toast("Duplicated as a draft ✓");
+  } catch(err){ toast(err.message, "error"); }
+}
+
+async function bulkPublish(published){
+  if(!selectedProducts.size) return;
+  try {
+    for(const id of Array.from(selectedProducts)){
+      const p = catalog.laptops.concat(catalog.digital).find(x => x.id === id);
+      if(!p) continue;
+      await apiFetch("/admin/products", {method:"POST", body: JSON.stringify(Object.assign({}, p, {published}))});
+    }
+    selectedProducts.clear();
+    await refreshAdminDashboard();
+    toast(published ? "Published ✓" : "Moved to drafts ✓");
+  } catch(err){ toast(err.message, "error"); }
+}
+
+async function bulkDelete(){
+  if(!selectedProducts.size || !confirm("Delete " + selectedProducts.size + " selected product(s)?")) return;
+  try {
+    for(const id of Array.from(selectedProducts)) await apiFetch("/admin/products/" + encodeURIComponent(id), {method:"DELETE"});
+    selectedProducts.clear();
+    await refreshAdminDashboard();
+    toast("Deleted");
+  } catch(err){ toast(err.message, "error"); }
+}
+
+async function clearOrders(){
+  if(!confirm("Clear all orders?")) return;
+  try { await apiFetch("/admin/orders", {method:"DELETE"}); renderAdminOrders(); toast("Orders cleared"); }
+  catch(err){ toast(err.message, "error"); }
+}
+async function clearMessages(){
+  if(!confirm("Clear all messages?")) return;
+  try { await apiFetch("/admin/messages", {method:"DELETE"}); renderAdminMessages(); toast("Messages cleared"); }
+  catch(err){ toast(err.message, "error"); }
+}
+
+async function adminLogout(){
+  try { await apiFetch("/admin/logout", {method:"POST"}); } catch(e){}
+  sessionStorage.removeItem(TOKENKEY);
+  sessionStorage.removeItem(ADMINKEY);
+  csrfToken = "";
+  await loadCsrf();
+  renderAdmin();
+  toast("Admin locked");
+}
+
+/* ---------- Uploads ---------- */
+async function uploadAdminFile(input, kind, targetName){
+  const file = input?.files?.[0];
+  if(!file){ toast("Choose a file first", "error"); return; }
+  if(file.size > 25 * 1024 * 1024){ toast("File is larger than 25MB", "error"); return; }
+  const reader = new FileReader();
+  reader.onload = async () => {
+    try {
+      const d = await apiFetch("/admin/upload", {method:"POST", body: JSON.stringify({kind, name: file.name, data: reader.result})});
+      const form = $("#adminProductForm");
+      if(form.elements[targetName]) form.elements[targetName].value = d.url;
+      toast("Upload complete ✓");
+    } catch(err){ toast("Upload failed: " + err.message, "error"); }
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ---------- TOTP ---------- */
+async function totpSetup(){
+  try {
+    const d = await apiFetch("/admin/2fa/setup", {method:"POST"});
+    $("#totpSecretDisplay").textContent = d.secret;
+    $("#totpSetupBox").classList.remove("hidden");
+    toast("Scan the secret with your authenticator app");
+  } catch(err){ toast(err.message, "error"); }
+}
+async function totpConfirm(){
+  try {
+    const code = $("#totpConfirmCode").value.trim();
+    await apiFetch("/admin/2fa/verify", {method:"POST", body: JSON.stringify({code})});
+    $("#totpSetupBox").classList.add("hidden");
+    toast("2FA enabled ✓");
+    renderTotpStatus();
+  } catch(err){ toast(err.message, "error"); }
+}
+async function totpDisable(){
+  const password = prompt("Enter your admin password to disable 2FA:");
+  if(!password) return;
+  const code = prompt("Enter your current 6-digit 2FA code:");
+  if(!code) return;
+  try {
+    await apiFetch("/admin/2fa/disable", {method:"POST", body: JSON.stringify({password, code})});
+    toast("2FA disabled");
+    renderTotpStatus();
+  } catch(err){ toast(err.message, "error"); }
+}
+function renderTotpStatus(){
+  const status = $("#totpStatus");
+  if(!status) return;
+  const enabled = !!sessionStorage.getItem(ADMINKEY);
+  status.textContent = enabled ? "2FA status is managed on the server." : "Log in to manage 2FA.";
+  $("#totpDisableBtn").classList.toggle("hidden", !enabled);
+}
+
+/* ---------- Backup export ---------- */
+function exportAdminBackup(){
+  const data = {
+    exportedAt: new Date().toISOString(),
+    catalog,
+    settings: JSON.parse(localStorage.getItem(SETTINGSKEY) || "{}")
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "mastertech-backup.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+/* ---------- Admin tabs ---------- */
+function adminTab(tab){
+  $$(".admin-tab[data-admin-tab]").forEach(b => b.classList.toggle("active", b.dataset.adminTab === tab));
+  $$(".admin-panel").forEach(p => p.classList.toggle("active", p.dataset.adminPanel === tab));
+  if(tab === "orders") renderAdminOrders();
+  if(tab === "messages") renderAdminMessages();
+  if(tab === "audit") renderAdminAudit();
+}
+$$(".admin-tab[data-admin-tab]").forEach(b => b.addEventListener("click", () => adminTab(b.dataset.adminTab)));
+
+/* ---------- Settings form load ---------- */
+function loadAdminSettings(){
+  const f = $("#adminSettingsForm");
+  if(!f) return;
+  const st = JSON.parse(localStorage.getItem(SETTINGSKEY) || "{}");
+  f.phone.value = st.phone ?? business.phone;
+  f.email.value = st.email ?? business.email;
+  f.location.value = st.location ?? business.location;
+  f.whatsapp.value = st.whatsapp || "";
+  f.facebook.value = st.facebook || "";
+  f.instagram.value = st.instagram || "";
+  f.linkedin.value = st.linkedin || "";
+  f.currency.value = st.currency || "$";
+}
+
+function syncBusiness(){
+  if($("#bizPhone")) $("#bizPhone").textContent = business.phone;
+  if($("#bizEmail")) $("#bizEmail").textContent = business.email;
+  if($("#bizLocation")) $("#bizLocation").textContent = business.location;
+  const st = JSON.parse(localStorage.getItem(SETTINGSKEY) || "{}");
+  const links = { facebook: st.facebook, instagram: st.instagram, linkedin: st.linkedin, whatsapp: st.whatsapp };
+  $$('.socials a').forEach(a => {
+    const key = {Facebook:"facebook", Instagram:"instagram", LinkedIn:"linkedin", WhatsApp:"whatsapp"}[a.getAttribute("aria-label")];
+    if(!key) return;
+    const url = links[key];
+    a.href = /^https?:\/\//i.test(url || "") ? url : "#";
+    if(url && /^https?:\/\//i.test(url)){ a.target = "_blank"; a.rel = "noopener noreferrer"; }
+  });
+}
+
+/* =========================================================
+   INIT
+   ========================================================= */
+document.addEventListener("DOMContentLoaded", () => {
+  initTheme();
+  const yearEl = $("#year");
+  if(yearEl) yearEl.textContent = new Date().getFullYear();
+
+  window.addEventListener("scroll", () => {
+    const t = $("#top");
+    if(t) t.classList.toggle("show", scrollY > 450);
+  });
+  const topBtn = $("#top");
+  if(topBtn) topBtn.onclick = () => scrollTo({top:0, behavior:"smooth"});
+
+  /* Poster filters */
+  $$(".pf").forEach(b => b.onclick = () => {
+    $$(".pf").forEach(x => x.classList.remove("btn-blue"));
+    b.classList.add("btn-blue");
+    renderPosters(b.dataset.filter);
+  });
+
+  /* Search / filter wiring */
+  const ls = $("#laptopSearch");
+  if(ls) ls.oninput = renderLaptops;
+  ["brand","ram","storage","sort"].forEach(id => { const el = $("#" + id); if(el) el.onchange = renderLaptops; });
+  const ds = $("#digitalSearch");
+  if(ds) ds.addEventListener("input", renderDigital);
+  const dc = $("#digitalCategory");
+  if(dc) dc.addEventListener("change", renderDigital);
+  const dsort = $("#digitalSort");
+  if(dsort) dsort.addEventListener("change", renderDigital);
+
+  /* Admin filters */
+  const acs = $("#adminCatalogSearch");
+  if(acs) acs.addEventListener("input", renderAdminProducts);
+  const acf = $("#adminCatalogFilter");
+  if(acf) acf.addEventListener("change", renderAdminProducts);
+  const acs2 = $("#adminCatalogSort");
+  if(acs2) acs2.addEventListener("change", renderAdminProducts);
+  const sap = $("#selectAllProducts");
+  if(sap) sap.addEventListener("change", e => {
+    filteredAdminProducts().forEach(p => e.target.checked ? selectedProducts.add(p.id) : selectedProducts.delete(p.id));
+    renderAdminProducts();
+  });
+
+  /* Uploads */
+  const ucb = $("#uploadCoverBtn");
+  if(ucb) ucb.addEventListener("click", () => uploadAdminFile($("#coverUpload"), "cover", "image"));
+  const upb = $("#uploadProductBtn");
+  if(upb) upb.addEventListener("click", () => uploadAdminFile($("#productFileUpload"), "file", "fileUrl"));
+
+  /* TOTP */
+  const tsb = $("#totpSetupBtn");
+  if(tsb) tsb.addEventListener("click", totpSetup);
+  const tcb = $("#totpConfirmBtn");
+  if(tcb) tcb.addEventListener("click", totpConfirm);
+  const tdb = $("#totpDisableBtn");
+  if(tdb) tdb.addEventListener("click", totpDisable);
+
+  /* Admin logout */
+  const al = $("#adminLogoutBtn");
+  if(al) al.addEventListener("click", adminLogout);
+
+  /* Owner M-mark entry point */
+  const adminLogoTrigger = document.getElementById("adminLogoTrigger");
+  if(adminLogoTrigger){
+    const openOwner = e => { e.preventDefault(); e.stopPropagation(); route("admin"); };
+    adminLogoTrigger.addEventListener("click", openOwner);
+    adminLogoTrigger.addEventListener("keydown", e => { if(e.key === "Enter" || e.key === " "){ openOwner(e); } });
+  }
+
+  /* Boot from server */
+  boot().then(() => {
+    updateCartCount();
+    renderAdmin();
+    fromHash();
+  });
+
+  /* Service worker (PWA) */
+  if("serviceWorker" in navigator){
+    navigator.serviceWorker.register("/sw.js").catch(err => console.info("SW not registered:", err.message));
+  }
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<script>eruda.init();</script>
+</body>
+</html>
