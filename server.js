@@ -13,34 +13,27 @@
 
 const http = require('http');
 const fs = require('fs');
-const fsp = require('fs/promises');
 const path = require('path');
 const crypto = require('crypto');
 const { URL } = require('url');
 
 // ---------------------------------------------------------------------------
-// Optional dependencies — loaded lazily so the server boots without them.
+// Optional dependencies
 // ---------------------------------------------------------------------------
 let sharp = null;
 let Resend = null;
-let S3Client = null;
-let PutObjectCommand = null;
-let GetObjectCommand = null;
-let ListObjectsV2Command = null;
-let DeleteObjectCommand = null;
+let S3Client = null, PutObjectCommand = null, GetObjectCommand = null;
 let authenticator = null;
 
-try { sharp = require('sharp'); } catch { /* optional */ }
-try { ({ Resend } = require('resend')); } catch { /* optional */ }
+try { sharp = require('sharp'); } catch {}
+try { ({ Resend } = require('resend')); } catch {}
 try {
   const aws = require('@aws-sdk/client-s3');
   S3Client = aws.S3Client;
   PutObjectCommand = aws.PutObjectCommand;
   GetObjectCommand = aws.GetObjectCommand;
-  ListObjectsV2Command = aws.ListObjectsV2Command;
-  DeleteObjectCommand = aws.DeleteObjectCommand;
-} catch { /* optional */ }
-try { ({ authenticator } = require('otplib')); } catch { /* optional */ }
+} catch {}
+try { ({ authenticator } = require('otplib')); } catch {}
 
 // ---------------------------------------------------------------------------
 // Config
@@ -59,7 +52,6 @@ const UPLOAD_DIR = process.env.MASTERTECH_UPLOADS
   : path.join(ROOT, 'uploads');
 
 const THUMB_DIR = path.join(UPLOAD_DIR, 'thumbs');
-
 const BASE_URL = (process.env.MASTERTECH_BASE_URL || '').replace(/\/+$/, '');
 const CORS_ORIGIN = process.env.MASTERTECH_CORS_ORIGIN || '';
 
@@ -96,8 +88,6 @@ if (IS_PRODUCTION && SESSION_SECRET.length < 32) {
   throw new Error('MASTERTECH_SESSION_SECRET must be at least 32 characters in production.');
 }
 
-// DECISION: in dev, if either secret is missing, we generate one and warn. In
-// production, both are required above, so this branch only triggers locally.
 const EFFECTIVE_ADMIN_PASSWORD = ADMIN_PASSWORD_ENV || crypto.randomBytes(18).toString('base64url');
 const EFFECTIVE_SESSION_SECRET = SESSION_SECRET || crypto.randomBytes(48).toString('base64url');
 
@@ -106,22 +96,16 @@ if (!ADMIN_PASSWORD_ENV) {
   console.warn('MASTERTECH_ADMIN_PASSWORD is not set.');
   console.warn('Temporary dev admin password for THIS RUN ONLY:');
   console.warn('  ' + EFFECTIVE_ADMIN_PASSWORD);
-  console.warn('Set MASTERTECH_ADMIN_PASSWORD before deploying to production.');
   console.warn('==============================================================');
 }
 if (!SESSION_SECRET) {
-  console.warn('MASTERTECH_SESSION_SECRET is not set — using a random one.');
-  console.warn('Sessions and download URLs will be invalidated on restart.');
+  console.warn('MASTERTECH_SESSION_SECRET is not set — using random.');
 }
-if (!EMAIL_ENABLED) {
-  console.warn('Resend is not configured — emails will queue but not send.');
-}
-if (!R2_ENABLED) {
-  console.warn('R2 sync is not configured — DB stays on local disk only.');
-}
+if (!EMAIL_ENABLED) console.warn('Resend is not configured — emails will queue but not send.');
+if (!R2_ENABLED) console.warn('R2 sync is not configured — DB stays on local disk only.');
 
 // ---------------------------------------------------------------------------
-// Demo seed (Academy intentionally empty)
+// Demo seed (Academy empty by design)
 // ---------------------------------------------------------------------------
 const DEMO_LAPTOPS = [
   ['lap01','Dell Latitude 5420','Dell',16,512,650,'Popular','Reliable business laptop for productivity and professional work.'],
@@ -136,30 +120,36 @@ const DEMO_LAPTOPS = [
   ['lap10','Lenovo IdeaPad 5','Lenovo',8,512,570,'Value','Affordable all-round laptop for work and study.'],
   ['lap11','Lenovo ThinkPad X1 Carbon','Lenovo',32,1000,1250,'Premium','Lightweight high-end business laptop.'],
   ['lap12','Lenovo Legion 5','Lenovo',32,1000,1400,'Performance','Powerful laptop for development, creation and demanding applications.']
-].map(([id, name, brand, ram, storage, price, tag, description]) => ({
-  id, name, brand, ram, storage, price, tag, description,
-  emoji: '▱',
-  type: 'laptop',
-  category: 'laptop',
-  published: true,
-  featured: false,
-  image: '',
-  thumbnailUrl: '',
-  fileUrl: '',
-  previewUrl: '',
-  tags: [],
-  sku: '',
-  volume: '',
-  author: '',
-  stock: 0,
-  variants: [],
-  updatedAt: new Date().toISOString()
-}));
+].map(function (x) {
+  return {
+    id: x[0], name: x[1], brand: x[2], ram: x[3], storage: x[4], price: x[5],
+    tag: x[6], description: x[7], emoji: '▱',
+    type: 'laptop', category: 'laptop',
+    published: true, featured: false,
+    image: '', thumbnailUrl: '', fileUrl: '', previewUrl: '',
+    tags: [], sku: '', volume: '', author: '',
+    stock: 0, variants: [],
+    updatedAt: new Date().toISOString()
+  };
+});
 
-const DEMO_DIGITAL = []; // Academy — seeded via Admin only.
+const DEMO_DIGITAL = [];
 
 // ---------------------------------------------------------------------------
-// DB
+// State (declared BEFORE anything uses it)
+// ---------------------------------------------------------------------------
+let db = null;
+let lastWrite = Date.now();
+let r2Client = null;
+let r2SyncPending = false;
+
+const sessions = new Map();
+const loginAttempts = new Map();
+const publicRate = new Map();
+const resetTokens = new Map();
+
+// ---------------------------------------------------------------------------
+// DB helpers
 // ---------------------------------------------------------------------------
 function initialDb() {
   return {
@@ -169,15 +159,11 @@ function initialDb() {
       email: 'hello@mastertech.com',
       location: 'Zimbabwe / Remote',
       currency: '$',
-      whatsapp: '',
-      facebook: '',
-      instagram: '',
-      linkedin: ''
+      whatsapp: '', facebook: '', instagram: '', linkedin: ''
     },
     orders: [],
     messages: [],
     audit: [],
-    users: null,               // reserved for future multi-user
     pendingEmails: [],
     csrfTokens: {},
     meta: { schemaVersion: 7, createdAt: new Date().toISOString() }
@@ -190,9 +176,9 @@ function repairDb(d) {
   if (!Array.isArray(d.catalog.laptops)) d.catalog.laptops = [];
   if (!Array.isArray(d.catalog.digital)) d.catalog.digital = [];
   if (!d.settings || typeof d.settings !== 'object') d.settings = {};
-  for (const k of ['phone','email','location','whatsapp','facebook','instagram','linkedin']) {
+  ['phone','email','location','whatsapp','facebook','instagram','linkedin'].forEach(function (k) {
     if (typeof d.settings[k] !== 'string') d.settings[k] = '';
-  }
+  });
   if (typeof d.settings.currency !== 'string' || !d.settings.currency) d.settings.currency = '$';
   if (!Array.isArray(d.orders)) d.orders = [];
   if (!Array.isArray(d.messages)) d.messages = [];
@@ -202,6 +188,14 @@ function repairDb(d) {
   if (!d.meta || typeof d.meta !== 'object') d.meta = { schemaVersion: 7, createdAt: new Date().toISOString() };
   if (typeof d.meta.schemaVersion !== 'number') d.meta.schemaVersion = 7;
   return d;
+}
+
+function saveDbSync(d) {
+  fs.mkdirSync(path.dirname(DB_FILE), { recursive: true });
+  const tmp = DB_FILE + '.tmp';
+  fs.writeFileSync(tmp, JSON.stringify(d, null, 2));
+  fs.renameSync(tmp, DB_FILE);
+  lastWrite = Date.now();
 }
 
 function loadDb() {
@@ -220,54 +214,13 @@ function loadDb() {
   }
 }
 
-let db = loadDb();
-let lastWrite = Date.now();
-
-function saveDbSync(d) {
-  fs.mkdirSync(path.dirname(DB_FILE), { recursive: true });
-  const tmp = DB_FILE + '.tmp';
-  fs.writeFileSync(tmp, JSON.stringify(d, null, 2));
-  fs.renameSync(tmp, DB_FILE);
-  lastWrite = Date.now();
-}
-
-// DECISION: saveDb is intentionally async so that R2 sync does not block the
-// response loop. The local write is synchronous (fast, atomic). The R2 push is
-// fire-and-forget; failures are logged but never block a request.
 function saveDb() {
   saveDbSync(db);
   scheduleR2Sync();
 }
 
-let r2SyncPending = false;
-function scheduleR2Sync() {
-  if (!R2_ENABLED) return;
-  if (r2SyncPending) return;
-  r2SyncPending = true;
-  setImmediate(async () => {
-    try {
-      await pushDbToR2();
-    } catch (err) {
-      console.warn('R2 sync failed:', err.message);
-    } finally {
-      r2SyncPending = false;
-    }
-  });
-}
-
 // ---------------------------------------------------------------------------
-// Admin password bootstrap
-// ---------------------------------------------------------------------------
-if (!db.adminPasswordHash || (FORCE_ADMIN_RESET && ADMIN_PASSWORD_ENV)) {
-  db.adminPasswordHash = passwordHash(EFFECTIVE_ADMIN_PASSWORD);
-  saveDbSync(db);
-  if (FORCE_ADMIN_RESET) {
-    console.warn('MASTERTECH_ADMIN_FORCE_RESET applied. Remove this env var after logging in.');
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Crypto helpers
+// Crypto helpers (defined before use)
 // ---------------------------------------------------------------------------
 function passwordHash(password) {
   const salt = crypto.randomBytes(16).toString('hex');
@@ -277,7 +230,8 @@ function passwordHash(password) {
 
 function passwordMatches(password, stored) {
   try {
-    const [salt, hex] = String(stored || '').split('$');
+    const parts = String(stored || '').split('$');
+    const salt = parts[0], hex = parts[1];
     if (!salt || !hex) return false;
     const actual = crypto.scryptSync(String(password), salt, 64).toString('hex');
     return crypto.timingSafeEqual(Buffer.from(actual, 'hex'), Buffer.from(hex, 'hex'));
@@ -287,47 +241,109 @@ function passwordMatches(password, stored) {
 function newToken() { return crypto.randomBytes(32).toString('hex'); }
 
 function signDownload(fileId, orderId, expiresAt) {
-  const payload = `${fileId}|${orderId}|${expiresAt}`;
-  return crypto.createHmac('sha256', EFFECTIVE_SESSION_SECRET).update(payload).digest('hex');
+  return crypto.createHmac('sha256', EFFECTIVE_SESSION_SECRET)
+    .update(fileId + '|' + orderId + '|' + expiresAt)
+    .digest('hex');
 }
 
 function verifyDownload(fileId, orderId, expiresAt, sig) {
   if (!expiresAt || Date.now() > Number(expiresAt)) return false;
   const expected = signDownload(fileId, orderId, expiresAt);
   if (expected.length !== String(sig || '').length) return false;
-  return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(String(sig)));
+  try {
+    return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(String(sig)));
+  } catch { return false; }
 }
 
 // ---------------------------------------------------------------------------
-// Session / CSRF stores
+// R2 (declared before saveDb's R2 hook uses it)
 // ---------------------------------------------------------------------------
-const sessions = new Map();     // token -> { expires, csrf }
-const loginAttempts = new Map();
-const publicRate = new Map();
-const resetTokens = new Map();  // token -> { expires, email }
-
-function auth(req) {
-  const h = req.headers.authorization || '';
-  if (!h.startsWith('Bearer ')) return null;
-  const t = h.slice(7);
-  const s = sessions.get(t);
-  if (!s || s.expires < Date.now()) { sessions.delete(t); return null; }
-  return t;
+function getR2Client() {
+  if (!R2_ENABLED) return null;
+  if (r2Client) return r2Client;
+  r2Client = new S3Client({
+    region: R2_REGION,
+    endpoint: R2_ENDPOINT,
+    credentials: { accessKeyId: R2_ACCESS_KEY, secretAccessKey: R2_SECRET_KEY }
+  });
+  return r2Client;
 }
 
-function rateLimit(store, key, max, windowMs) {
-  const now = Date.now();
-  const list = (store.get(key) || []).filter(t => now - t < windowMs);
-  if (list.length >= max) { store.set(key, list); return false; }
-  list.push(now);
-  store.set(key, list);
-  return true;
+async function pushDbToR2() {
+  const client = getR2Client();
+  if (!client) return;
+  const body = fs.readFileSync(DB_FILE);
+  await client.send(new PutObjectCommand({
+    Bucket: R2_BUCKET, Key: 'mastertech-db.json',
+    Body: body, ContentType: 'application/json'
+  }));
 }
 
-function ipOf(req) {
-  const xff = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim();
-  return (xff || req.socket.remoteAddress || 'unknown').replace(/^::ffff:/, '');
+async function pullDbFromR2() {
+  const client = getR2Client();
+  if (!client) return false;
+  try {
+    const out = await client.send(new GetObjectCommand({ Bucket: R2_BUCKET, Key: 'mastertech-db.json' }));
+    const chunks = [];
+    for await (const chunk of out.Body) chunks.push(chunk);
+    const raw = Buffer.concat(chunks).toString('utf8');
+    const parsed = JSON.parse(raw);
+    db = repairDb(parsed);
+    saveDbSync(db);
+    console.log('DB restored from R2.');
+    return true;
+  } catch (err) {
+    console.warn('R2 pull failed:', err.message);
+    return false;
+  }
 }
+
+function scheduleR2Sync() {
+  if (!R2_ENABLED) return;
+  if (r2SyncPending) return;
+  r2SyncPending = true;
+  setImmediate(function () {
+    pushDbToR2()
+      .catch(function (err) { console.warn('R2 sync failed:', err.message); })
+      .finally(function () { r2SyncPending = false; });
+  });
+}
+
+function scheduleNightlyBackup() {
+  if (!R2_ENABLED) return;
+  const now = new Date();
+  const next = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 3, 0, 0));
+  const delay = next.getTime() - now.getTime();
+  const timer = setTimeout(function () {
+    (async function () {
+      try {
+        const client = getR2Client();
+        const date = new Date().toISOString().slice(0, 10);
+        const body = fs.readFileSync(DB_FILE);
+        await client.send(new PutObjectCommand({
+          Bucket: R2_BUCKET, Key: 'backups/mastertech-db-' + date + '.json',
+          Body: body, ContentType: 'application/json'
+        }));
+        console.log('R2 nightly backup written.');
+      } catch (err) { console.warn('R2 nightly backup failed:', err.message); }
+      scheduleNightlyBackup();
+    })();
+  }, delay);
+  if (timer.unref) timer.unref();
+}
+
+// ---------------------------------------------------------------------------
+// NOW load the database (after all its dependencies exist)
+// ---------------------------------------------------------------------------
+db = loadDb();
+
+if (!db.adminPasswordHash || (FORCE_ADMIN_RESET && ADMIN_PASSWORD_ENV)) {
+  db.adminPasswordHash = passwordHash(EFFECTIVE_ADMIN_PASSWORD);
+  saveDbSync(db);
+  if (FORCE_ADMIN_RESET) console.warn('MASTERTECH_ADMIN_FORCE_RESET applied.');
+}
+
+scheduleNightlyBackup();
 
 // ---------------------------------------------------------------------------
 // HTTP helpers
@@ -342,11 +358,12 @@ function json(res, status, payload) {
   res.end(body);
 }
 
-function readBody(req, limit = MAX_BODY_BYTES) {
-  return new Promise((resolve, reject) => {
+function readBody(req, limit) {
+  limit = limit || MAX_BODY_BYTES;
+  return new Promise(function (resolve, reject) {
     let total = 0;
     const chunks = [];
-    req.on('data', c => {
+    req.on('data', function (c) {
       total += c.length;
       if (total > limit) {
         reject(Object.assign(new Error('Request body too large'), { statusCode: 413 }));
@@ -355,7 +372,7 @@ function readBody(req, limit = MAX_BODY_BYTES) {
       }
       chunks.push(c);
     });
-    req.on('end', () => {
+    req.on('end', function () {
       if (!chunks.length) return resolve({});
       try { resolve(JSON.parse(Buffer.concat(chunks).toString('utf8'))); }
       catch { reject(Object.assign(new Error('Invalid JSON body'), { statusCode: 400 })); }
@@ -376,9 +393,6 @@ function securityHeaders(res) {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-  // DECISION: CSP allows unsafe-inline because index.html has inline <style>
-  // and <script>. A future refactor could split these into files and tighten
-  // the policy. For now, we prefer "site works" over "perfect CSP".
   res.setHeader(
     'Content-Security-Policy',
     "default-src 'self'; " +
@@ -397,10 +411,11 @@ function securityHeaders(res) {
 // Validation / sanitization
 // ---------------------------------------------------------------------------
 const HTML_TAG_RE = /<\/?[^>]+>/g;
+
 function stripHtml(s) { return String(s || '').replace(HTML_TAG_RE, ''); }
 
 function safeString(s, max) {
-  return stripHtml(String(s ?? '').trim()).slice(0, max);
+  return stripHtml(String(s == null ? '' : s).trim()).slice(0, max);
 }
 
 function isSafeUrl(u) {
@@ -409,7 +424,7 @@ function isSafeUrl(u) {
   if (/^\/media\//i.test(s)) return true;
   try {
     const parsed = new URL(s);
-    return ['http:', 'https:'].includes(parsed.protocol);
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
   } catch { return false; }
 }
 
@@ -429,8 +444,8 @@ function safeProduct(p) {
     author: safeString(p.author, 120),
     sku: safeString(p.sku, 80),
     tags: Array.isArray(p.tags)
-      ? p.tags.map(x => safeString(x, 40)).filter(Boolean).slice(0, 20)
-      : String(p.tags || '').split(',').map(x => safeString(x, 40)).filter(Boolean).slice(0, 20),
+      ? p.tags.map(function (x) { return safeString(x, 40); }).filter(Boolean).slice(0, 20)
+      : String(p.tags || '').split(',').map(function (x) { return safeString(x, 40); }).filter(Boolean).slice(0, 20),
     featured: Boolean(p.featured),
     published: p.published !== false,
     fileUrl: String(p.fileUrl || '').trim().slice(0, 2000),
@@ -478,8 +493,11 @@ function cleanCustomer(c) {
   return customer;
 }
 
-function allProducts() { return [...db.catalog.laptops, ...db.catalog.digital]; }
-function routeProduct(id) { return allProducts().find(p => p.id === id); }
+function allProducts() { return db.catalog.laptops.concat(db.catalog.digital); }
+
+function routeProduct(id) {
+  return allProducts().find(function (p) { return p.id === id; });
+}
 
 function buildOrderItems(items) {
   if (!Array.isArray(items) || !items.length || items.length > 100) {
@@ -487,17 +505,16 @@ function buildOrderItems(items) {
   }
   let total = 0;
   const clean = [];
-  for (const item of items) {
-    const id = String(item?.id || '');
-    const qty = Number(item?.qty);
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+    const id = String((item && item.id) || '');
+    const qty = Number(item && item.qty);
     const product = routeProduct(id);
     if (!product) return { error: 'One or more products are no longer available' };
     if (!Number.isInteger(qty) || qty < 1 || qty > 99) return { error: 'Invalid product quantity' };
     if (product.published === false) return { error: 'One or more products are not for sale' };
-    // DECISION: stock 0 means "unlimited" for digital goods so existing
-    // Academy volumes are not blocked before stock tracking is set up.
     if (product.type === 'laptop' && product.stock > 0 && product.stock < qty) {
-      return { error: `Not enough stock for ${product.name}` };
+      return { error: 'Not enough stock for ' + product.name };
     }
     const price = Number(product.price);
     total += price * qty;
@@ -505,9 +522,9 @@ function buildOrderItems(items) {
       id: product.id,
       type: product.type || 'digital',
       name: product.name,
-      price,
+      price: price,
       emoji: product.emoji || '▱',
-      qty
+      qty: qty
     });
   }
   return { items: clean, total: Number(total.toFixed(2)) };
@@ -519,10 +536,10 @@ function buildOrderItems(items) {
 function audit(action, target, meta) {
   db.audit.unshift({
     ts: new Date().toISOString(),
-    ip: meta?.ip || null,
-    action,
+    ip: (meta && meta.ip) || null,
+    action: action,
     target: target || null,
-    meta: meta ? { ...meta, ip: undefined } : null
+    meta: meta ? Object.assign({}, meta, { ip: undefined }) : null
   });
   if (db.audit.length > 5000) db.audit.length = 5000;
 }
@@ -533,9 +550,8 @@ function audit(action, target, meta) {
 function queueEmail(to, subject, html, meta) {
   db.pendingEmails.push({
     id: 'EM-' + Date.now().toString(36) + '-' + crypto.randomInt(100, 1000),
-    to, subject, html,
-    attempts: 0,
-    lastError: null,
+    to: to, subject: subject, html: html,
+    attempts: 0, lastError: null,
     createdAt: new Date().toISOString(),
     sentAt: null,
     meta: meta || null
@@ -546,17 +562,16 @@ async function processEmailQueue() {
   if (!EMAIL_ENABLED) return;
   const resend = new Resend(RESEND_API_KEY);
   const now = Date.now();
-  for (const email of db.pendingEmails.slice()) {
+  for (let i = 0; i < db.pendingEmails.length; i++) {
+    const email = db.pendingEmails[i];
     if (email.sentAt) continue;
     if (email.attempts >= EMAIL_RETRY_MAX) continue;
     const age = now - new Date(email.createdAt).getTime();
     if (age < EMAIL_RETRY_INTERVAL_MS * email.attempts) continue;
     try {
       await resend.emails.send({
-        from: RESEND_FROM,
-        to: email.to,
-        subject: email.subject,
-        html: email.html
+        from: RESEND_FROM, to: email.to,
+        subject: email.subject, html: email.html
       });
       email.sentAt = new Date().toISOString();
       email.lastError = null;
@@ -566,97 +581,39 @@ async function processEmailQueue() {
       console.warn('Email send failed:', email.id, err.message);
     }
   }
-  // Trim sent emails older than 7 days.
   const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
-  db.pendingEmails = db.pendingEmails.filter(e => !e.sentAt || new Date(e.sentAt).getTime() > cutoff);
+  db.pendingEmails = db.pendingEmails.filter(function (e) {
+    return !e.sentAt || new Date(e.sentAt).getTime() > cutoff;
+  });
   saveDb();
 }
 
-setInterval(() => { processEmailQueue().catch(err => console.warn('Email loop:', err.message)); }, EMAIL_RETRY_INTERVAL_MS).unref();
-
-// ---------------------------------------------------------------------------
-// R2 sync
-// ---------------------------------------------------------------------------
-let r2Client = null;
-function getR2Client() {
-  if (!R2_ENABLED) return null;
-  if (r2Client) return r2Client;
-  r2Client = new S3Client({
-    region: R2_REGION,
-    endpoint: R2_ENDPOINT,
-    credentials: { accessKeyId: R2_ACCESS_KEY, secretAccessKey: R2_SECRET_KEY }
-  });
-  return r2Client;
-}
-
-async function pushDbToR2() {
-  const client = getR2Client();
-  if (!client) return;
-  const body = fs.readFileSync(DB_FILE);
-  await client.send(new PutObjectCommand({
-    Bucket: R2_BUCKET,
-    Key: 'mastertech-db.json',
-    Body: body,
-    ContentType: 'application/json'
-  }));
-}
-
-async function pullDbFromR2() {
-  const client = getR2Client();
-  if (!client) return false;
-  try {
-    const out = await client.send(new GetObjectCommand({
-      Bucket: R2_BUCKET,
-      Key: 'mastertech-db.json'
-    }));
-    const chunks = [];
-    for await (const chunk of out.Body) chunks.push(chunk);
-    const raw = Buffer.concat(chunks).toString('utf8');
-    const parsed = JSON.parse(raw);
-    db = repairDb(parsed);
-    saveDbSync(db);
-    console.log('DB restored from R2.');
-    return true;
-  } catch (err) {
-    console.warn('R2 pull failed:', err.message);
-    return false;
+function queueOrderEmails(order) {
+  if (!EMAIL_ENABLED) return;
+  const itemLines = order.items.map(function (x) {
+    return '<li>' + x.name + ' × ' + x.qty + ' — ' + (x.price * x.qty).toFixed(2) + '</li>';
+  }).join('');
+  const businessEmail = (db.settings.email || '').trim();
+  if (order.customer.email) {
+    queueEmail(order.customer.email, 'MasterTech order ' + order.orderId,
+      '<h2>Thanks for your order</h2><p>Hi ' + order.customer.name + ',</p>' +
+      '<p>We received your order <b>' + order.orderId + '</b>. We\'ll contact you to confirm payment and delivery.</p>' +
+      '<ul>' + itemLines + '</ul><p><b>Total:</b> ' + order.total.toFixed(2) + '</p>');
+  }
+  if (businessEmail) {
+    queueEmail(businessEmail, 'New order ' + order.orderId,
+      '<h2>New order received</h2>' +
+      '<p><b>Customer:</b> ' + order.customer.name + ' &lt;' + order.customer.email + '&gt;</p>' +
+      '<p><b>Phone:</b> ' + (order.customer.phone || '—') + '</p>' +
+      '<p><b>Address:</b> ' + (order.customer.address || '—') + '</p>' +
+      '<ul>' + itemLines + '</ul><p><b>Total:</b> ' + order.total.toFixed(2) + '</p>');
   }
 }
-
-// Nightly backup at 03:00 UTC.
-function scheduleNightlyBackup() {
-  if (!R2_ENABLED) return;
-  const now = new Date();
-  const next = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 3, 0, 0));
-  const delay = next.getTime() - now.getTime();
-  setTimeout(async () => {
-    try {
-      const client = getR2Client();
-      const date = new Date().toISOString().slice(0, 10);
-      const body = fs.readFileSync(DB_FILE);
-      await client.send(new PutObjectCommand({
-        Bucket: R2_BUCKET,
-        Key: `backups/mastertech-db-${date}.json`,
-        Body: body,
-        ContentType: 'application/json'
-      }));
-      console.log(`R2 nightly backup written: backups/mastertech-db-${date}.json`);
-    } catch (err) {
-      console.warn('R2 nightly backup failed:', err.message);
-    }
-    scheduleNightlyBackup();
-  }, delay).unref();
-}
-scheduleNightlyBackup();
 
 // ---------------------------------------------------------------------------
 // Uploads
 // ---------------------------------------------------------------------------
-const ALLOWED_MIME = new Set([
-  'image/png', 'image/jpeg', 'image/webp',
-  'application/pdf', 'application/zip', 'application/epub+zip'
-]);
-const MIME_EXT = {
+const ALLOWED_MIME = {
   'image/png': '.png',
   'image/jpeg': '.jpg',
   'image/webp': '.webp',
@@ -666,14 +623,14 @@ const MIME_EXT = {
 };
 
 function readBase64Upload(body) {
-  const data = String(body?.data || '');
+  const data = String((body && body.data) || '');
   const match = data.match(/^data:([^;]+);base64,(.+)$/);
   if (!match) throw Object.assign(new Error('Upload must be a base64 data URL'), { statusCode: 400 });
   const mime = match[1].toLowerCase();
-  if (!ALLOWED_MIME.has(mime)) throw Object.assign(new Error('Unsupported file type'), { statusCode: 400 });
+  if (!ALLOWED_MIME[mime]) throw Object.assign(new Error('Unsupported file type'), { statusCode: 400 });
   const buffer = Buffer.from(match[2], 'base64');
   if (buffer.length > MAX_UPLOAD_BYTES) throw Object.assign(new Error('File is too large (25MB maximum)'), { statusCode: 413 });
-  return { mime, buffer };
+  return { mime: mime, buffer: buffer };
 }
 
 function safeName(name) {
@@ -683,23 +640,27 @@ function safeName(name) {
 // ---------------------------------------------------------------------------
 // Static / media
 // ---------------------------------------------------------------------------
+const STATIC_FILES = {
+  '/': { file: 'index.html', type: 'text/html; charset=utf-8', cache: 'no-store' },
+  '/index.html': { file: 'index.html', type: 'text/html; charset=utf-8', cache: 'no-store' },
+  '/sw.js': { file: 'sw.js', type: 'application/javascript; charset=utf-8', cache: 'no-store' },
+  '/manifest.webmanifest': { file: 'manifest.webmanifest', type: 'application/manifest+json; charset=utf-8', cache: 'public, max-age=300' }
+};
+
 function mediaFile(req, res, pathname) {
   const rawRel = pathname.slice('/media/'.length);
   let rel;
   try { rel = decodeURIComponent(rawRel); }
   catch { return json(res, 400, { error: 'Bad path' }); }
-  if (!rel || rel.includes('..') || rel.includes('\\') || rel.startsWith('/')) {
+  if (!rel || rel.indexOf('..') !== -1 || rel.indexOf('\\') !== -1 || rel.charAt(0) === '/') {
     return json(res, 404, { error: 'Not found' });
   }
   const file = path.resolve(UPLOAD_DIR, rel);
-  if (!file.startsWith(UPLOAD_DIR + path.sep)) return json(res, 404, { error: 'Not found' });
+  if (file.indexOf(UPLOAD_DIR + path.sep) !== 0) return json(res, 404, { error: 'Not found' });
   if (!fs.existsSync(file) || !fs.statSync(file).isFile()) return json(res, 404, { error: 'Not found' });
 
-  // DECISION: digital files under /media/files/* are NOT served directly.
-  // They must be requested via /api/download/:fileId?token=... which checks
-  // a signed URL. This prevents buyers from sharing raw file URLs.
   const relNorm = rel.replace(/\\/g, '/');
-  if (relNorm.startsWith('files/')) {
+  if (relNorm.indexOf('files/') === 0) {
     return json(res, 403, { error: 'Use /api/download/:fileId?token=... to access this file' });
   }
 
@@ -717,41 +678,32 @@ function mediaFile(req, res, pathname) {
   fs.createReadStream(file).pipe(res);
 }
 
-async function downloadFile(req, res, pathname, query) {
+function downloadFile(req, res, pathname, query) {
   const fileId = decodeURIComponent(pathname.slice('/api/download/'.length));
-  if (!fileId || fileId.includes('/') || fileId.includes('\\') || fileId.includes('..')) {
+  if (!fileId || fileId.indexOf('/') !== -1 || fileId.indexOf('\\') !== -1 || fileId.indexOf('..') !== -1) {
     return json(res, 400, { error: 'Invalid file id' });
   }
   const token = query.get('token') || '';
   const orderId = query.get('order') || '';
   const expiresAt = query.get('exp') || '';
-  const sig = token;
-  if (!verifyDownload(fileId, orderId, expiresAt, sig)) {
+  if (!verifyDownload(fileId, orderId, expiresAt, token)) {
     return json(res, 403, { error: 'Download link is invalid or has expired' });
   }
-  const file = path.resolve(UPLOAD_DIR, 'files', fileId);
-  if (!file.startsWith(path.join(UPLOAD_DIR, 'files') + path.sep)) return json(res, 404, { error: 'Not found' });
+  const baseDir = path.join(UPLOAD_DIR, 'files');
+  const file = path.resolve(baseDir, fileId);
+  if (file.indexOf(baseDir + path.sep) !== 0) return json(res, 404, { error: 'Not found' });
   if (!fs.existsSync(file) || !fs.statSync(file).isFile()) return json(res, 404, { error: 'Not found' });
 
   const ext = path.extname(file).toLowerCase();
-  const types = {
-    '.pdf': 'application/pdf', '.zip': 'application/zip', '.epub': 'application/epub+zip'
-  };
+  const types = { '.pdf': 'application/pdf', '.zip': 'application/zip', '.epub': 'application/epub+zip' };
   res.writeHead(200, {
     'Content-Type': types[ext] || 'application/octet-stream',
     'X-Content-Type-Options': 'nosniff',
-    'Content-Disposition': `attachment; filename="${path.basename(file)}"`
+    'Content-Disposition': 'attachment; filename="' + path.basename(file) + '"'
   });
   if (req.method === 'HEAD') return res.end();
   fs.createReadStream(file).pipe(res);
 }
-
-const STATIC_FILES = {
-  '/': { file: 'index.html', type: 'text/html; charset=utf-8', cache: 'no-store' },
-  '/index.html': { file: 'index.html', type: 'text/html; charset=utf-8', cache: 'no-store' },
-  '/sw.js': { file: 'sw.js', type: 'application/javascript; charset=utf-8', cache: 'no-store' },
-  '/manifest.webmanifest': { file: 'manifest.webmanifest', type: 'application/manifest+json; charset=utf-8', cache: 'public, max-age=300' }
-};
 
 function sendFile(req, res) {
   const pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
@@ -769,38 +721,68 @@ function sendFile(req, res) {
   fs.createReadStream(file).pipe(res);
 }
 
+// ---------------------------------------------------------------------------
+// Rate limiting
+// ---------------------------------------------------------------------------
+function rateLimit(store, key, max, windowMs) {
+  const now = Date.now();
+  const list = (store.get(key) || []).filter(function (t) { return now - t < windowMs; });
+  if (list.length >= max) { store.set(key, list); return false; }
+  list.push(now);
+  store.set(key, list);
+  return true;
+}
+
+function ipOf(req) {
+  const xff = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim();
+  return (xff || req.socket.remoteAddress || 'unknown').replace(/^::ffff:/, '');
+}
+
+function auth(req) {
+  const h = req.headers.authorization || '';
+  if (h.indexOf('Bearer ') !== 0) return null;
+  const t = h.slice(7);
+  const s = sessions.get(t);
+  if (!s || s.expires < Date.now()) { sessions.delete(t); return null; }
+  return t;
+}
 
 // ---------------------------------------------------------------------------
-// Cleanup loop
+// Cleanup timers
 // ---------------------------------------------------------------------------
-setInterval(() => {
+setInterval(function () {
   const now = Date.now();
-  for (const [k, times] of loginAttempts) {
-    const fresh = times.filter(t => now - t < 15 * 60 * 1000);
-    if (fresh.length) loginAttempts.set(k, fresh); else loginAttempts.delete(k);
-  }
-  for (const [k, times] of publicRate) {
-    const fresh = times.filter(t => now - t < 60 * 1000);
-    if (fresh.length) publicRate.set(k, fresh); else publicRate.delete(k);
-  }
-  for (const [t, s] of sessions) if (s.expires < now) sessions.delete(t);
-  for (const [t, r] of resetTokens) if (r.expires < now) resetTokens.delete(t);
+  Array.from(loginAttempts.entries()).forEach(function (e) {
+    const fresh = e[1].filter(function (t) { return now - t < 15 * 60 * 1000; });
+    if (fresh.length) loginAttempts.set(e[0], fresh); else loginAttempts.delete(e[0]);
+  });
+  Array.from(publicRate.entries()).forEach(function (e) {
+    const fresh = e[1].filter(function (t) { return now - t < 60 * 1000; });
+    if (fresh.length) publicRate.set(e[0], fresh); else publicRate.delete(e[0]);
+  });
+  Array.from(sessions.entries()).forEach(function (e) {
+    if (e[1].expires < now) sessions.delete(e[0]);
+  });
+  Array.from(resetTokens.entries()).forEach(function (e) {
+    if (e[1].expires < now) resetTokens.delete(e[0]);
+  });
 }, 5 * 60 * 1000).unref();
 
+setInterval(function () {
+  processEmailQueue().catch(function (err) { console.warn('Email loop:', err.message); });
+}, EMAIL_RETRY_INTERVAL_MS).unref();
+
 // ---------------------------------------------------------------------------
-// Router
+// HTTP server
 // ---------------------------------------------------------------------------
-const server = http.createServer(async (req, res) => {
+const server = http.createServer(async function (req, res) {
   setCors(res);
   try {
-    const u = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+    const u = new URL(req.url, 'http://' + (req.headers.host || 'localhost'));
     const p = u.pathname;
     const ip = ipOf(req);
 
-    if (req.method === 'OPTIONS') {
-      res.writeHead(204);
-      return res.end();
-    }
+    if (req.method === 'OPTIONS') { res.writeHead(204); return res.end(); }
 
     if ((p === '/health' || p === '/api/health') && (req.method === 'GET' || req.method === 'HEAD')) {
       if (req.method === 'HEAD') { res.writeHead(200); return res.end(); }
@@ -818,7 +800,7 @@ const server = http.createServer(async (req, res) => {
           orders: db.orders.length,
           messages: db.messages.length,
           audit: db.audit.length,
-          pendingEmails: db.pendingEmails.filter(e => !e.sentAt).length
+          pendingEmails: db.pendingEmails.filter(function (e) { return !e.sentAt; }).length
         },
         emailEnabled: EMAIL_ENABLED,
         r2Enabled: R2_ENABLED,
@@ -826,19 +808,15 @@ const server = http.createServer(async (req, res) => {
       });
     }
 
-    if (p.startsWith('/media/')) return mediaFile(req, res, p);
+    if (p.indexOf('/media/') === 0) return mediaFile(req, res, p);
+    if (p.indexOf('/api/download/') === 0) return downloadFile(req, res, p, u.searchParams);
 
-    if (p.startsWith('/api/download/')) return downloadFile(req, res, p, u.searchParams);
-
-    if (p.startsWith('/api/')) {
-      // ------------------------------------------------------------- PUBLIC
+    if (p.indexOf('/api/') === 0) {
+      // -------- PUBLIC --------
       if (req.method === 'GET' && p === '/api/catalog') {
-        const publishedLaptops = db.catalog.laptops.filter(x => x.published !== false);
-        const publishedDigital = db.catalog.digital.filter(x => x.published !== false);
-        return json(res, 200, {
-          catalog: { laptops: publishedLaptops, digital: publishedDigital },
-          settings: db.settings
-        });
+        const laptops = db.catalog.laptops.filter(function (x) { return x.published !== false; });
+        const digital = db.catalog.digital.filter(function (x) { return x.published !== false; });
+        return json(res, 200, { catalog: { laptops: laptops, digital: digital }, settings: db.settings });
       }
 
       if (req.method === 'GET' && p === '/api/settings') {
@@ -861,32 +839,28 @@ const server = http.createServer(async (req, res) => {
         if (!customer) return json(res, 400, { error: 'Valid customer name and email are required' });
         const built = buildOrderItems(b.items);
         if (built.error) return json(res, 400, { error: built.error });
-
-        // Decrement stock for physical goods.
-        for (const item of built.items) {
+        for (let i = 0; i < built.items.length; i++) {
+          const item = built.items[i];
           if (item.type === 'laptop') {
             const product = routeProduct(item.id);
             if (product && product.stock > 0) product.stock -= item.qty;
           }
         }
-
         const order = {
           orderId: 'MT-' + Date.now().toString(36).toUpperCase() + '-' + crypto.randomInt(100, 1000),
           date: new Date().toISOString(),
           status: 'Pending',
-          customer,
+          customer: customer,
           items: built.items,
           total: built.total,
-          notes: '',
-          refunded: false,
-          cancelledAt: null,
+          notes: '', refunded: false, cancelledAt: null,
           emailSent: b.emailSent === true
         };
         db.orders.unshift(order);
-        audit('order.create', order.orderId, { ip, emailSent: order.emailSent });
+        audit('order.create', order.orderId, { ip: ip, emailSent: order.emailSent });
         saveDb();
         queueOrderEmails(order);
-        return json(res, 201, { order });
+        return json(res, 201, { order: order });
       }
 
       if (req.method === 'POST' && p === '/api/messages') {
@@ -903,7 +877,7 @@ const server = http.createServer(async (req, res) => {
           id: 'MSG-' + Date.now().toString(36) + '-' + crypto.randomInt(100, 1000),
           date: new Date().toISOString(),
           type: safeString(b.type || 'Message', 80),
-          name, email,
+          name: name, email: email,
           phone: safeString(b.phone, 60),
           subject: safeString(b.subject, 200),
           message: safeString(b.message || b.details, 5000)
@@ -913,7 +887,7 @@ const server = http.createServer(async (req, res) => {
         return json(res, 201, { message: msg });
       }
 
-      // ------------------------------------------------------------- AUTH
+      // -------- ADMIN LOGIN --------
       if (req.method === 'POST' && p === '/api/admin/login') {
         if (!rateLimit(loginAttempts, ip, 8, 15 * 60 * 1000)) {
           return json(res, 429, { error: 'Too many login attempts. Try again later.' });
@@ -930,25 +904,24 @@ const server = http.createServer(async (req, res) => {
         }
         const t = newToken();
         const csrf = newToken();
-        sessions.set(t, { expires: Date.now() + SESSION_TTL_MS, csrf });
-        return json(res, 200, { token: t, csrf, requires2FA: Boolean(db.adminTotpEnabled) });
+        sessions.set(t, { expires: Date.now() + SESSION_TTL_MS, csrf: csrf });
+        return json(res, 200, { token: t, csrf: csrf, requires2FA: Boolean(db.adminTotpEnabled) });
       }
 
-      // ------------------------------------------------------------- ADMIN (guarded)
-      const t = auth(req);
-      if (!t) return json(res, 401, { error: 'Unauthorized' });
+      // -------- ADMIN (guarded) --------
+      const sessionToken = auth(req);
+      if (!sessionToken) return json(res, 401, { error: 'Unauthorized' });
 
-      // CSRF: required on all state-changing admin requests.
       if (req.method !== 'GET' && req.method !== 'HEAD') {
         const csrfHeader = String(req.headers['x-csrf-token'] || '');
-        const session = sessions.get(t);
+        const session = sessions.get(sessionToken);
         if (!session || !csrfHeader || csrfHeader !== session.csrf) {
           return json(res, 403, { error: 'CSRF token missing or invalid' });
         }
       }
 
       if (req.method === 'POST' && p === '/api/admin/logout') {
-        sessions.delete(t);
+        sessions.delete(sessionToken);
         return json(res, 200, { ok: true });
       }
 
@@ -958,20 +931,19 @@ const server = http.createServer(async (req, res) => {
           settings: db.settings,
           orders: db.orders,
           messages: db.messages,
-          audit: db.audit.slice(0, 200),
-          feedback: db.orders.filter(o => o.comment || o.liked === 'Yes')
+          audit: db.audit.slice(0, 200)
         });
       }
 
-      // ---------- TOTP ----------
+      // -------- TOTP --------
       if (req.method === 'POST' && p === '/api/admin/2fa/setup') {
         if (!authenticator) return json(res, 500, { error: '2FA library not installed' });
         const secret = authenticator.generateSecret();
         const otpauth = authenticator.keyuri('admin', 'MasterTech', secret);
         db.adminTotpPendingSecret = secret;
         saveDb();
-        audit('2fa.setup.begin', 'admin', { ip });
-        return json(res, 200, { otpauth, secret });
+        audit('2fa.setup.begin', 'admin', { ip: ip });
+        return json(res, 200, { otpauth: otpauth, secret: secret });
       }
       if (req.method === 'POST' && p === '/api/admin/2fa/verify') {
         if (!authenticator) return json(res, 500, { error: '2FA library not installed' });
@@ -985,7 +957,7 @@ const server = http.createServer(async (req, res) => {
         db.adminTotpEnabled = true;
         delete db.adminTotpPendingSecret;
         saveDb();
-        audit('2fa.enabled', 'admin', { ip });
+        audit('2fa.enabled', 'admin', { ip: ip });
         return json(res, 200, { ok: true });
       }
       if (req.method === 'POST' && p === '/api/admin/2fa/disable') {
@@ -1000,11 +972,11 @@ const server = http.createServer(async (req, res) => {
         delete db.adminTotpSecret;
         delete db.adminTotpEnabled;
         saveDb();
-        audit('2fa.disabled', 'admin', { ip });
+        audit('2fa.disabled', 'admin', { ip: ip });
         return json(res, 200, { ok: true });
       }
 
-      // ---------- Password change ----------
+      // -------- Password change --------
       if (req.method === 'PUT' && p === '/api/admin/password') {
         const b = await readBody(req);
         if (!passwordMatches(String(b.currentPassword || ''), db.adminPasswordHash)) {
@@ -1014,22 +986,21 @@ const server = http.createServer(async (req, res) => {
         if (next.length < 12) return json(res, 400, { error: 'New password must be at least 12 characters' });
         db.adminPasswordHash = passwordHash(next);
         saveDb();
-        audit('admin.password.change', 'admin', { ip });
+        audit('admin.password.change', 'admin', { ip: ip });
         return json(res, 200, { ok: true });
       }
 
-      // ---------- Password reset ----------
+      // -------- Password reset --------
       if (req.method === 'POST' && p === '/api/admin/forgot') {
         const b = await readBody(req);
         const email = String(b.email || '').trim().slice(0, 254);
         const adminEmail = (db.settings.email || '').trim();
-        // Always return 200 to prevent email enumeration.
         if (adminEmail && email.toLowerCase() === adminEmail.toLowerCase()) {
           const rt = newToken();
           resetTokens.set(rt, { expires: Date.now() + 60 * 60 * 1000, email: adminEmail });
           const url = (BASE_URL || '') + '/#reset=' + rt;
           queueEmail(adminEmail, 'MasterTech password reset',
-            `<p>Reset your MasterTech admin password:</p><p><a href="${url}">${url}</a></p><p>This link expires in 1 hour.</p>`);
+            '<p>Reset your MasterTech admin password:</p><p><a href="' + url + '">' + url + '</a></p><p>This link expires in 1 hour.</p>');
           saveDb();
         }
         return json(res, 200, { ok: true });
@@ -1044,15 +1015,15 @@ const server = http.createServer(async (req, res) => {
         db.adminPasswordHash = passwordHash(next);
         resetTokens.delete(token);
         saveDb();
-        audit('admin.password.reset', 'admin', { ip });
+        audit('admin.password.reset', 'admin', { ip: ip });
         return json(res, 200, { ok: true });
       }
 
-      // ---------- Uploads ----------
+      // -------- Uploads --------
       if (req.method === 'POST' && p === '/api/admin/upload') {
         const b = await readBody(req);
         const up = readBase64Upload(b);
-        const ext = MIME_EXT[up.mime];
+        const ext = ALLOWED_MIME[up.mime];
         const kind = b.kind === 'cover' ? 'covers' : 'files';
         const dir = path.join(UPLOAD_DIR, kind);
         fs.mkdirSync(dir, { recursive: true });
@@ -1061,7 +1032,7 @@ const server = http.createServer(async (req, res) => {
         fs.writeFileSync(target, up.buffer);
 
         let thumbUrl = '';
-        if (sharp && kind === 'covers' && up.mime.startsWith('image/')) {
+        if (sharp && kind === 'covers' && up.mime.indexOf('image/') === 0) {
           try {
             fs.mkdirSync(THUMB_DIR, { recursive: true });
             const thumbName = filename.replace(/\.[^.]+$/, '.webp');
@@ -1073,18 +1044,18 @@ const server = http.createServer(async (req, res) => {
           }
         }
 
-        audit('upload.create', kind + '/' + filename, { ip, mime: up.mime, size: up.buffer.length });
+        audit('upload.create', kind + '/' + filename, { ip: ip, mime: up.mime, size: up.buffer.length });
         saveDb();
         return json(res, 201, {
           url: '/media/' + kind + '/' + filename,
-          thumbUrl,
+          thumbUrl: thumbUrl,
           name: safeName(b.name),
           size: up.buffer.length,
           mime: up.mime
         });
       }
 
-      // ---------- Signed downloads ----------
+      // -------- Signed downloads --------
       if (req.method === 'POST' && p === '/api/admin/sign-download') {
         const b = await readBody(req);
         const fileUrl = String(b.fileUrl || '');
@@ -1096,114 +1067,111 @@ const server = http.createServer(async (req, res) => {
         const expiresAt = Date.now() + expiresIn;
         const sig = signDownload(fileId, orderId, expiresAt);
         const base = BASE_URL || '';
-        const url = `${base}/api/download/${encodeURIComponent(fileId)}?order=${encodeURIComponent(orderId)}&exp=${expiresAt}&token=${sig}`;
-        audit('download.sign', fileId, { ip, orderId });
+        const url = base + '/api/download/' + encodeURIComponent(fileId) + '?order=' + encodeURIComponent(orderId) + '&exp=' + expiresAt + '&token=' + sig;
+        audit('download.sign', fileId, { ip: ip, orderId: orderId });
         saveDb();
-        return json(res, 200, { url, expiresAt });
+        return json(res, 200, { url: url, expiresAt: expiresAt });
       }
 
-      // ---------- Products ----------
+      // -------- Products --------
       if (req.method === 'POST' && p === '/api/admin/products') {
         const b = safeProduct(await readBody(req));
         const validation = validateProduct(b);
         if (validation) return json(res, 400, { error: validation });
-        db.catalog.laptops = db.catalog.laptops.filter(x => x.id !== b.id);
-        db.catalog.digital = db.catalog.digital.filter(x => x.id !== b.id);
+        db.catalog.laptops = db.catalog.laptops.filter(function (x) { return x.id !== b.id; });
+        db.catalog.digital = db.catalog.digital.filter(function (x) { return x.id !== b.id; });
         if (b.type === 'laptop') db.catalog.laptops.push(b);
         else db.catalog.digital.push(b);
-        audit('product.save', b.id, { ip, type: b.type });
+        audit('product.save', b.id, { ip: ip, type: b.type });
         saveDb();
         return json(res, 200, { product: b, catalog: db.catalog });
       }
 
-      if (req.method === 'DELETE' && p.startsWith('/api/admin/products/')) {
+      if (req.method === 'DELETE' && p.indexOf('/api/admin/products/') === 0) {
         const id = decodeURIComponent(p.slice('/api/admin/products/'.length));
         if (!id) return json(res, 400, { error: 'Product id is required' });
         const before = db.catalog.laptops.length + db.catalog.digital.length;
-        db.catalog.laptops = db.catalog.laptops.filter(x => x.id !== id);
-        db.catalog.digital = db.catalog.digital.filter(x => x.id !== id);
+        db.catalog.laptops = db.catalog.laptops.filter(function (x) { return x.id !== id; });
+        db.catalog.digital = db.catalog.digital.filter(function (x) { return x.id !== id; });
         if (before === db.catalog.laptops.length + db.catalog.digital.length) {
           return json(res, 404, { error: 'Product not found' });
         }
-        audit('product.delete', id, { ip });
+        audit('product.delete', id, { ip: ip });
         saveDb();
         return json(res, 200, { catalog: db.catalog });
       }
 
-      // ---------- Settings ----------
+      // -------- Settings --------
       if (req.method === 'PUT' && p === '/api/admin/settings') {
         const b = await readBody(req);
-        const next = { ...db.settings };
-        for (const key of ['phone','email','location','whatsapp','facebook','instagram','linkedin','currency']) {
+        const next = Object.assign({}, db.settings);
+        ['phone','email','location','whatsapp','facebook','instagram','linkedin','currency'].forEach(function (key) {
           if (b[key] !== undefined) next[key] = safeString(b[key], 500);
-        }
+        });
         if (next.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(next.email)) {
           return json(res, 400, { error: 'Business email is invalid' });
         }
         if (next.currency.length > 5) return json(res, 400, { error: 'Currency symbol is too long' });
-        for (const key of ['whatsapp','facebook','instagram','linkedin']) {
+        ['whatsapp','facebook','instagram','linkedin'].forEach(function (key) {
           if (next[key] && !/^https?:\/\//i.test(next[key])) {
-            return json(res, 400, { error: key + ' must be an http or https URL' });
+            throw Object.assign(new Error(key + ' must be an http or https URL'), { statusCode: 400 });
           }
-        }
+        });
         db.settings = next;
-        audit('settings.save', 'settings', { ip });
+        audit('settings.save', 'settings', { ip: ip });
         saveDb();
         return json(res, 200, { settings: db.settings });
       }
 
-      // ---------- Orders (admin) ----------
+      // -------- Orders (admin) --------
       if (req.method === 'GET' && p === '/api/admin/orders') {
         const limit = Math.min(Math.max(Number(u.searchParams.get('limit')) || 20, 1), 200);
         const offset = Math.max(Number(u.searchParams.get('offset')) || 0, 0);
-        const items = db.orders.slice(offset, offset + limit);
-        return json(res, 200, { items, total: db.orders.length, limit, offset });
+        return json(res, 200, { items: db.orders.slice(offset, offset + limit), total: db.orders.length, limit: limit, offset: offset });
       }
 
-      if (req.method === 'PUT' && p.startsWith('/api/admin/orders/')) {
+      if (req.method === 'PUT' && p.indexOf('/api/admin/orders/') === 0) {
         const id = decodeURIComponent(p.slice('/api/admin/orders/'.length));
         const b = await readBody(req);
-        const o = db.orders.find(x => x.orderId === id);
+        const o = db.orders.find(function (x) { return x.orderId === id; });
         if (!o) return json(res, 404, { error: 'Order not found' });
-        const allowed = ['Pending', 'Confirmed', 'Processing', 'Completed', 'Cancelled'];
-        if (b.status && !allowed.includes(b.status)) return json(res, 400, { error: 'Invalid order status' });
+        const allowed = ['Pending','Confirmed','Processing','Completed','Cancelled'];
+        if (b.status && allowed.indexOf(b.status) === -1) return json(res, 400, { error: 'Invalid order status' });
         if (b.status) o.status = b.status;
         if (b.notes !== undefined) o.notes = safeString(b.notes, 5000);
         if (b.refunded !== undefined) o.refunded = Boolean(b.refunded);
         if (b.status === 'Cancelled' && !o.cancelledAt) o.cancelledAt = new Date().toISOString();
-        audit('order.update', o.orderId, { ip, status: o.status, refunded: o.refunded });
+        audit('order.update', o.orderId, { ip: ip, status: o.status });
         saveDb();
         return json(res, 200, { order: o });
       }
 
       if (req.method === 'DELETE' && p === '/api/admin/orders') {
         db.orders = [];
-        audit('orders.clear', 'all', { ip });
+        audit('orders.clear', 'all', { ip: ip });
         saveDb();
         return json(res, 200, { ok: true });
       }
 
-      // ---------- Messages (admin) ----------
+      // -------- Messages (admin) --------
       if (req.method === 'GET' && p === '/api/admin/messages') {
         const limit = Math.min(Math.max(Number(u.searchParams.get('limit')) || 20, 1), 200);
         const offset = Math.max(Number(u.searchParams.get('offset')) || 0, 0);
-        const items = db.messages.slice(offset, offset + limit);
-        return json(res, 200, { items, total: db.messages.length, limit, offset });
+        return json(res, 200, { items: db.messages.slice(offset, offset + limit), total: db.messages.length, limit: limit, offset: offset });
       }
 
       if (req.method === 'DELETE' && p === '/api/admin/messages') {
         db.messages = [];
-        audit('messages.clear', 'all', { ip });
+        audit('messages.clear', 'all', { ip: ip });
         saveDb();
         return json(res, 200, { ok: true });
       }
 
-      // ---------- Audit ----------
+      // -------- Audit --------
       if (req.method === 'GET' && p === '/api/admin/audit') {
         const limit = Math.min(Math.max(Number(u.searchParams.get('limit')) || 20, 1), 200);
         const offset = Math.max(Number(u.searchParams.get('offset')) || 0, 0);
-        const items = db.audit.slice(offset, offset + limit);
-        return json(res, 200, { items, total: db.audit.length, limit, offset });
+        return json(res, 200, { items: db.audit.slice(offset, offset + limit), total: db.audit.length, limit: limit, offset: offset });
       }
 
       return json(res, 404, { error: 'API route not found' });
@@ -1218,71 +1186,41 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-// ---------------------------------------------------------------------------
-// Email templates
-// ---------------------------------------------------------------------------
-function queueOrderEmails(order) {
-  if (!EMAIL_ENABLED) return;
-
-  const itemLines = order.items.map(x => `<li>${x.name} × ${x.qty} — ${(x.price * x.qty).toFixed(2)}</li>`).join('');
-  const businessEmail = (db.settings.email || '').trim();
-
-  if (order.customer.email) {
-    queueEmail(order.customer.email, `MasterTech order ${order.orderId}`,
-      `<h2>Thanks for your order</h2>
-       <p>Hi ${order.customer.name},</p>
-       <p>We received your order <b>${order.orderId}</b>. We'll contact you to confirm payment and delivery.</p>
-       <ul>${itemLines}</ul>
-       <p><b>Total:</b> ${order.total.toFixed(2)}</p>`);
-  }
-  if (businessEmail) {
-    queueEmail(businessEmail, `New order ${order.orderId}`,
-      `<h2>New order received</h2>
-       <p><b>Customer:</b> ${order.customer.name} &lt;${order.customer.email}&gt;</p>
-       <p><b>Phone:</b> ${order.customer.phone || '—'}</p>
-       <p><b>Address:</b> ${order.customer.address || '—'}</p>
-       <ul>${itemLines}</ul>
-       <p><b>Total:</b> ${order.total.toFixed(2)}</p>`);
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Server lifecycle
-// ---------------------------------------------------------------------------
 server.requestTimeout = REQUEST_TIMEOUT_MS;
 server.headersTimeout = REQUEST_TIMEOUT_MS + 5_000;
 
-server.on('error', err => {
+server.on('error', function (err) {
   if (err.code === 'EADDRINUSE') {
-    console.error(`Port ${PORT} is already in use.`);
+    console.error('Port ' + PORT + ' is already in use.');
   } else {
     console.error('Server error:', err);
   }
   process.exit(1);
 });
 
-// DECISION: on boot, if R2 is enabled and the local DB is missing, attempt a
-// pull. This makes Render free-tier restarts recover state from R2.
 async function boot() {
   if (R2_ENABLED && !fs.existsSync(DB_FILE)) {
     console.log('Local DB missing — attempting R2 restore...');
     await pullDbFromR2();
   }
-  server.listen(PORT, HOST, () => {
-    console.log(`MasterTech v7 running at http://${HOST}:${PORT}`);
-    console.log(`DB:      ${DB_FILE}`);
-    console.log(`Uploads: ${UPLOAD_DIR}`);
-    console.log(`Email:   ${EMAIL_ENABLED ? 'Resend enabled' : 'queued only (no Resend key)'}`);
-    console.log(`R2 sync: ${R2_ENABLED ? 'enabled' : 'disabled'}`);
+  server.listen(PORT, HOST, function () {
+    console.log('MasterTech v7 running at http://' + HOST + ':' + PORT);
+    console.log('DB:      ' + DB_FILE);
+    console.log('Uploads: ' + UPLOAD_DIR);
+    console.log('Email:   ' + (EMAIL_ENABLED ? 'Resend enabled' : 'queued only (no Resend key)'));
+    console.log('R2 sync: ' + (R2_ENABLED ? 'enabled' : 'disabled'));
   });
 }
 
-boot();
+boot().catch(function (err) {
+  console.error('Boot failed:', err);
+  process.exit(1);
+});
 
 function shutdown(signal) {
-  console.log(`${signal} received — shutting down.`);
-  server.close(() => process.exit(0));
-  setTimeout(() => process.exit(0), 5000).unref();
+  console.log(signal + ' received — shutting down.');
+  server.close(function () { process.exit(0); });
+  setTimeout(function () { process.exit(0); }, 5000).unref();
 }
-process.on('SIGTERM', () => shutdown('SIGTERM'));
-process.on('SIGINT', () => shutdown('SIGINT'));
+process.on('SIGTERM', function () { shutdown('SIGTERM'); });
+process.on('SIGINT', function () { shutdown('SIGINT'); });
