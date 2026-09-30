@@ -768,8 +768,7 @@ function sendFile(req, res) {
   if (req.method === 'HEAD') return res.end();
   fs.createReadStream(file).pipe(res);
 }
-}
-}
+
 
 // ---------------------------------------------------------------------------
 // Cleanup loop
